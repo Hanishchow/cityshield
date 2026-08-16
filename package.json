@@ -10,7 +10,8 @@
     "test": "node scripts/test-incident.mjs",
     "preview": "vite preview",
     "hero:build": "node scripts/hero/generate-frames.mjs && node scripts/hero/encode.mjs",
-    "check:keys": "node scripts/check-keys.mjs"
+    "check:keys": "node scripts/check-keys.mjs",
+    "deploy": "npm run build && node scripts/deploy-pages.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",

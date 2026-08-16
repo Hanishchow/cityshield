@@ -159,9 +159,31 @@ is now the source of truth and `decode()` is best-effort.
 - [x] `npm run lint` clean — zero warnings
 - [x] `npm test` — 17/17
 - [x] Budgets met: **JS 88 KB gzip** (budget 120), **CSS 5.1 KB gzip** (budget 20)
-- [x] README with setup, `hero:build`, `check:keys`, and the Flow swap command
+- [x] README with setup, `hero:build`, `check:keys`, deploy, and the Flow swap command
+- [x] **No secret in git history** — only `.env.example` is tracked; verified before the first commit
 - [ ] Lighthouse perf/a11y — needs a visible browser
-- [ ] `.env.local` absent from git history — N/A until `git init`
+
+---
+
+## Stage 11 — Deployment ✅
+
+- [x] `git init`, first commit, pushed to `Hanishchow/city-shield` (public)
+- [x] Sub-path support: `vite base`, router `basename`, base-relative hero manifest
+- [x] `%BASE_URL%` for favicon and poster preload in `index.html`
+- [x] Raw `href="/sos"` anchors converted to router `Link` so they respect the basename
+- [x] `postbuild.mjs` — `.nojekyll`, `404.html`, real directory indexes per static route
+- [x] `npm run deploy` — repeatable publish to `gh-pages`
+- [x] GitHub Pages enabled on `gh-pages` / root
+
+**Live:** https://hanishchow.github.io/city-shield/
+
+**Verified on the deployed site:** all 7 routes render; `/`, `/sos`, `/services`,
+`/report`, `/about` return **200**; hero manifest loads with 120 frames;
+**zero failed resource requests**.
+
+Known and accepted: `/track/:id` and unknown paths return HTTP **404** while
+serving the app. Correct for unknown paths; unavoidable for dynamic routes on
+static hosting. The page loads and routes correctly either way.
 
 ---
 

@@ -1,8 +1,12 @@
 # City Shield
 
+**Live: https://hanishchow.github.io/city-shield/**
+
 A citizen emergency platform for Bengaluru. One tap plus continuous GPS replaces
 six helplines — and every responding government agency shares **one incident
 record** instead of receiving six disconnected phone calls.
+
+> Prototype on mock data. No emergency service is contacted. Call 112 for real emergencies.
 
 - [`docs/PRD.md`](docs/PRD.md) — product requirements, incident model, integration tiers
 - [`docs/FRONTEND-SPEC.md`](docs/FRONTEND-SPEC.md) — design system, architecture, hero technique
@@ -26,8 +30,33 @@ drift, and injectable failure. Nothing is blocked on keys.
 | `npm run dev` | Dev server |
 | `npm run build` | Production build |
 | `npm run lint` | oxlint |
+| `npm test` | Incident state machine + routing tests (17) |
 | `npm run hero:build` | Regenerate the hero frame sequence |
 | `npm run check:keys` | Validate configured API keys with one real call each |
+| `npm run deploy` | Build and publish to GitHub Pages |
+
+## Deployment
+
+Published to GitHub Pages from the `gh-pages` branch:
+
+```bash
+npm run deploy
+```
+
+The site is served from a sub-path (`/city-shield/`), so `vite.config.js` sets
+`base` and the router takes `basename={import.meta.env.BASE_URL}`. The hero
+manifest stores **base-relative** paths for the same reason. To host at a domain
+root instead:
+
+```bash
+BASE_PATH=/ npm run build
+```
+
+`scripts/postbuild.mjs` writes `.nojekyll`, a `404.html` fallback, and a real
+directory index for each static route — so `/sos`, `/services`, `/report` and
+`/about` return a genuine **200** rather than Pages' 404-with-a-body. Dynamic
+routes (`/track/:id`) still fall back to `404.html`: the page loads and routes
+correctly, but the HTTP status is 404, which is unavoidable on static hosting.
 
 ## Configuration
 

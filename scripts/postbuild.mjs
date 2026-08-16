@@ -7,7 +7,7 @@
  * which would silently break assets if any ever land there.
  */
 
-import { copyFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { copyFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -21,6 +21,17 @@ if (!existsSync(join(DIST, 'index.html'))) {
 copyFileSync(join(DIST, 'index.html'), join(DIST, '404.html'));
 writeFileSync(join(DIST, '.nojekyll'), '');
 
+/**
+ * Static routes get a real directory index so Pages answers 200 rather than
+ * serving 404.html with a 404 status. Dynamic routes (/track/:id) can't be
+ * enumerated and still rely on the 404.html fallback, which works in a browser.
+ */
+const STATIC_ROUTES = ['sos', 'services', 'report', 'about'];
+for (const route of STATIC_ROUTES) {
+  mkdirSync(join(DIST, route), { recursive: true });
+  copyFileSync(join(DIST, 'index.html'), join(DIST, route, 'index.html'));
+}
+
 // Report the real deployed size so budget regressions are visible.
 const size = (dir) =>
   readdirSync(dir, { withFileTypes: true }).reduce((sum, e) => {
@@ -29,5 +40,6 @@ const size = (dir) =>
   }, 0);
 
 console.log(
-  `postbuild: 404.html + .nojekyll written · dist total ${(size(DIST) / 1024 / 1024).toFixed(2)} MB`,
+  `postbuild: 404.html + .nojekyll + ${STATIC_ROUTES.length} route indexes · ` +
+    `dist total ${(size(DIST) / 1024 / 1024).toFixed(2)} MB`,
 );
