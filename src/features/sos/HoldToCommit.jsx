@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Siren } from 'lucide-react';
 
 const HOLD_MS = 2000;
 
@@ -96,7 +95,6 @@ export default function HoldToCommit({ onPressStart, onPressEnd, onCommit, disab
         aria-label="Hold for two seconds to send an emergency alert"
         className="absolute inset-5 flex touch-none flex-col items-center justify-center gap-2 rounded-full bg-signal text-white transition-colors duration-state hover:bg-signal-hover disabled:opacity-60"
       >
-        <Siren size={32} aria-hidden="true" />
         <span className="text-small font-bold uppercase tracking-wide">
           {progress > 0 ? 'Keep holding' : 'Hold'}
         </span>

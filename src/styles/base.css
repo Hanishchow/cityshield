@@ -127,6 +127,33 @@
   .skip-link:focus {
     top: 12px;
   }
+
+  /* Legibility scrim behind the hero copy. Written by hand rather than with
+     Tailwind gradient utilities: an opacity modifier on a var() colour
+     (`from-ground/85`) produces an invalid gradient and silently renders
+     nothing at all. */
+  .hero-scrim {
+    background-image: linear-gradient(
+      to right,
+      rgb(var(--ground-rgb) / 0.97) 0%,
+      rgb(var(--ground-rgb) / 0.88) 32%,
+      rgb(var(--ground-rgb) / 0.45) 58%,
+      rgb(var(--ground-rgb) / 0) 80%
+    );
+  }
+
+  @media (max-width: 768px) {
+    /* On narrow screens the copy sits over the middle of the art, so the scrim
+       has to be vertical instead. */
+    .hero-scrim {
+      background-image: linear-gradient(
+        to bottom,
+        rgb(var(--ground-rgb) / 0.9) 0%,
+        rgb(var(--ground-rgb) / 0.82) 60%,
+        rgb(var(--ground-rgb) / 0.5) 100%
+      );
+    }
+  }
 }
 
 /* Motion policy: all non-essential motion is opt-in via this query. */

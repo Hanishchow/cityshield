@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PhoneCall, X } from 'lucide-react';
 import HoldToCommit from '../features/sos/HoldToCommit.jsx';
 import LocationBanner from '../features/location/LocationBanner.jsx';
 import Button from '../components/ui/Button.jsx';
@@ -79,7 +78,7 @@ export default function Sos() {
             Report again
           </Button>
           <Button href="tel:112" variant="outline">
-            <PhoneCall size={16} aria-hidden="true" /> Call 112
+            Call 112
           </Button>
         </div>
       </div>
@@ -134,10 +133,10 @@ export default function Sos() {
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Button href="tel:112" variant="signal">
-            <PhoneCall size={16} aria-hidden="true" /> Call 112 now
+            Call 112 now
           </Button>
           <Button onClick={cancel} variant="ghost">
-            <X size={16} aria-hidden="true" /> Cancel emergency
+            Cancel emergency
           </Button>
         </div>
       </div>
@@ -167,7 +166,7 @@ export default function Sos() {
 
       <div className="mt-6">
         <Button href="tel:112" variant="outline" full size="lg">
-          <PhoneCall size={16} aria-hidden="true" /> Or call 112 directly
+          Or call 112 directly
         </Button>
       </div>
 

@@ -1,10 +1,13 @@
+/* CSS @import must precede all other rules — an @import placed after the
+   @tailwind directives is invalid and PostCSS drops it SILENTLY, taking the
+   whole file with it. Both imports stay at the top. Tailwind still resolves the
+   @layer blocks inside base.css from here. */
 @import './styles/tokens.css';
+@import './styles/base.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import './styles/base.css';
 
 html,
 body,

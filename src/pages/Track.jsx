@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { PhoneCall, X, Share2 } from 'lucide-react';
 import Card, { CardLabel } from '../components/ui/Card.jsx';
 import Button from '../components/ui/Button.jsx';
 import StatusPill from '../components/ui/StatusPill.jsx';
@@ -71,7 +70,7 @@ export default function Track() {
             Start an emergency report
           </Button>
           <Button href="tel:112" variant="outline">
-            <PhoneCall size={16} aria-hidden="true" /> Call 112
+            Call 112
           </Button>
         </div>
       </div>
@@ -212,13 +211,13 @@ export default function Track() {
             <CardLabel>Actions</CardLabel>
             <div className="mt-4 space-y-2">
               <Button href="tel:112" variant="signal" full>
-                <PhoneCall size={16} aria-hidden="true" /> Call 112
+                Call 112
               </Button>
               <Button variant="outline" full onClick={() => navigator.share?.({ url: window.location.href })}>
-                <Share2 size={16} aria-hidden="true" /> Share tracking link
+                Share tracking link
               </Button>
               <Button variant="ghost" full onClick={cancel}>
-                <X size={16} aria-hidden="true" /> Cancel emergency
+                Cancel emergency
               </Button>
               <Button variant="ghost" full onClick={reset} to="/">
                 Close and start over

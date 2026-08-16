@@ -6,6 +6,9 @@
   --ground: #fbfaf8;
   --surface: #ffffff;
   --sunken: #f3f1ed;
+  /* Channels, for gradients and alpha compositing. Tailwind cannot apply an
+     opacity modifier to a var() colour, so anything needing alpha uses these. */
+  --ground-rgb: 251 250 248;
 
   /* Ink */
   --ink: #12151a;
@@ -49,6 +52,7 @@
   --ground: #0e1116;
   --surface: #161a21;
   --sunken: #0a0d11;
+  --ground-rgb: 14 17 22;
 
   --ink: #f2f4f7;
   --ink-2: #b4bcc8;

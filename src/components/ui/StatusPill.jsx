@@ -15,17 +15,16 @@ const TONES = {
   neutral: 'bg-sunken text-ink-2 border-line',
 };
 
-export default function StatusPill({ tone = 'neutral', children, dot = true, className }) {
+export default function StatusPill({ tone = 'neutral', children, className }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1',
+        'inline-flex items-center rounded-sm border px-2 py-0.5',
         'text-label font-semibold uppercase tracking-wide whitespace-nowrap',
         TONES[tone],
         className,
       )}
     >
-      {dot && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-current" aria-hidden="true" />}
       {children}
     </span>
   );

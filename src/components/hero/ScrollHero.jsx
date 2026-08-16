@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import useFrameSequence from './useFrameSequence.js';
 
 /**
@@ -18,11 +18,11 @@ const DESCRIPTION =
 export default function ScrollHero({ children }) {
   const trackRef = useRef(null);
   const canvasRef = useRef(null);
+  const barRef = useRef(null);
   const rafRef = useRef(0);
   const lastFrameRef = useRef(-1);
 
   const { status, meta, loadedCount, frameAt } = useFrameSequence();
-  const [progress, setProgress] = useState(0);
 
   const scrubbing = status === 'ready';
 
@@ -32,17 +32,24 @@ export default function ScrollHero({ children }) {
 
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
-    const ctx = canvas.getContext('2d', { alpha: false });
+    // Deliberately NOT { alpha: false }: an opaque canvas composites as solid
+    // black until something is drawn, and draw() bails early while frames are
+    // still loading. Transparent lets the poster underneath show through.
+    const ctx = canvas.getContext('2d');
 
     const size = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const { clientWidth: w, clientHeight: h } = canvas;
+      if (!w || !h) return;
       if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
         canvas.width = Math.round(w * dpr);
         canvas.height = Math.round(h * dpr);
         lastFrameRef.current = -1;
       }
     };
+
+    // Size up front so the element is never left at its 300x150 default.
+    size();
 
     const draw = () => {
       rafRef.current = 0;
@@ -52,7 +59,11 @@ export default function ScrollHero({ children }) {
       const rect = track.getBoundingClientRect();
       const distance = rect.height - window.innerHeight;
       const p = distance > 0 ? Math.min(1, Math.max(0, -rect.top / distance)) : 0;
-      setProgress(p);
+
+      // Written straight to the DOM, NOT through state. Calling setState on every
+      // scroll event re-renders, which tears down and re-creates this effect —
+      // removing the scroll listener mid-scroll and making scrubbing stutter.
+      if (barRef.current) barRef.current.style.width = `${(p * 100).toFixed(2)}%`;
 
       const index = Math.round(p * (meta.frameCount - 1));
       if (index === lastFrameRef.current && canvas.width) return;
@@ -119,19 +130,21 @@ export default function ScrollHero({ children }) {
             : 'relative flex min-h-[70vh] items-center overflow-hidden'
         }
       >
-        <div className="absolute inset-0" role="img" aria-label={DESCRIPTION}>
-          {scrubbing ? (
-            <canvas ref={canvasRef} className="h-full w-full" />
-          ) : status !== 'failed' ? (
+        <div className="absolute inset-0 bg-ground" role="img" aria-label={DESCRIPTION}>
+          {/* The poster is ALWAYS rendered as the base layer, so the stage is
+              never empty — while frames load, if decoding fails, under reduced
+              motion, or on a slow link. The canvas draws opaque frames on top. */}
+          {status !== 'failed' && (
             <img
               src={poster}
               alt=""
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
               fetchPriority="high"
             />
-          ) : null}
+          )}
+          {scrubbing && <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />}
           {/* Legibility scrim — the frames are pale, the copy sits on top */}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ground via-ground/85 to-ground/20" />
+          <div className="hero-scrim pointer-events-none absolute inset-0" />
         </div>
 
         <div className="relative mx-auto w-full max-w-shell px-5 md:px-8">{children}</div>
@@ -141,10 +154,7 @@ export default function ScrollHero({ children }) {
             className="pointer-events-none absolute bottom-6 left-1/2 h-0.5 w-24 -translate-x-1/2 overflow-hidden rounded-full bg-line"
             aria-hidden="true"
           >
-            <div
-              className="h-full bg-civic"
-              style={{ width: `${Math.round(progress * 100)}%` }}
-            />
+            <div ref={barRef} className="h-full w-0 bg-civic" />
           </div>
         )}
       </div>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Loads a hero frame sequence described by /hero/frames.json.
@@ -130,13 +130,17 @@ export default function useFrameSequence(manifestUrl = withBase('hero/frames.jso
     };
   }, [manifestUrl]);
 
-  /** Nearest loaded frame at or before `index`, so scrubbing never blanks. */
-  const frameAt = (index) => {
+  /**
+   * Nearest loaded frame at or before `index`, so scrubbing never blanks.
+   * Stable identity — it reads through a ref, so the draw effect that depends
+   * on it must not be torn down on every render.
+   */
+  const frameAt = useCallback((index) => {
     const frames = framesRef.current;
     if (frames[index]) return frames[index];
     for (let i = index; i >= 0; i--) if (frames[i]) return frames[i];
     return null;
-  };
+  }, []);
 
   return { ...state, frameAt };
 }

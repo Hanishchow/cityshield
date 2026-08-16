@@ -1,4 +1,3 @@
-import { PhoneCall } from 'lucide-react';
 import Button from '../components/ui/Button.jsx';
 
 export default function NotFound() {
@@ -11,7 +10,7 @@ export default function NotFound() {
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Button href="tel:112" variant="signal" size="lg">
-          <PhoneCall size={16} aria-hidden="true" /> Call 112
+          Call 112
         </Button>
         <Button to="/sos" variant="outline" size="lg">
           Emergency SOS

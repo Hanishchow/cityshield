@@ -187,6 +187,47 @@ static hosting. The page loads and routes correctly either way.
 
 ---
 
+## Stage 12 — Bugs found after first deploy ✅
+
+Four real defects that only surfaced once the site was viewed in a real browser.
+Recorded because each was silent — nothing errored.
+
+1. **`base.css` was dropped from every build.** `@import` placed *after* the
+   `@tailwind` directives is invalid CSS, and PostCSS discarded the whole file
+   without warning. Cost: no focus-visible ring, no `prefers-reduced-motion`
+   guard, no skip-link hiding (both skip links rendered permanently at the top of
+   the page), no `.font-serif-display`. **Earlier accessibility claims in Stage 9
+   were wrong for the duration.** Fixed by moving both imports above the
+   `@tailwind` directives; verified by grepping the built CSS for the rules.
+
+2. **Frame 0 was blank, so the hero looked broken.** The generator faded the grid
+   in from `t=0`, meaning the first frame — and therefore the poster, and the top
+   of the page — drew nothing. The scrub was working the whole time; there was
+   just nothing to see. Grid now renders from the first frame, and the poster is
+   the *final* frame so the static fallback carries the full message.
+
+3. **The scrim rendered nothing.** `from-ground/85` asks Tailwind to apply an
+   opacity modifier to a `var()` colour, which it cannot do — the emitted
+   gradient was invalid and resolved to `background-image: none`. Replaced with a
+   hand-written `.hero-scrim` using `--ground-rgb` channels.
+
+4. **The hero rendered solid black on the deployed site.** `getContext('2d',
+   { alpha: false })` composites as opaque black until something is drawn, and
+   `draw()` returns early while frames are still loading — so the canvas sat
+   unsized at its 300×150 default, stretched and black. Fixed three ways: the
+   context is transparent, the canvas is sized on mount rather than only inside
+   `draw()`, and the poster is now always rendered as a base layer beneath the
+   canvas so the stage is never empty.
+
+Also in this pass: removed decorative iconography (generic pictograms, badge
+dots, arrow affordances) per feedback; the only icon left is the mobile menu
+toggle. Mobile nav is text-only.
+
+**Verified live after fixing:** canvas sizes to 1270×800, four distinct frames
+across the scroll, progress bar tracks 0→100%.
+
+---
+
 ## Cross-cutting invariants
 
 All currently hold:

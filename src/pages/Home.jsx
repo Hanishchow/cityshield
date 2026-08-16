@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Radio, MapPin, Layers, ShieldCheck, PhoneCall } from 'lucide-react';
 import ScrollHero from '../components/hero/ScrollHero.jsx';
 import Button from '../components/ui/Button.jsx';
 import Card, { CardLabel } from '../components/ui/Card.jsx';
@@ -32,22 +31,18 @@ const STEPS = [
 
 const PRINCIPLES = [
   {
-    icon: Layers,
     t: 'One incident, many agencies',
     d: 'A road accident needs ambulance, police and civic. Today that is three calls and three blind dispatches. Here it is one record they all share.',
   },
   {
-    icon: MapPin,
     t: 'Location with its uncertainty attached',
     d: 'We show the accuracy radius, never a falsely precise pin. A 60-metre fix drawn as a 2-metre dot is dangerous.',
   },
   {
-    icon: Radio,
     t: 'Degrades to a phone call',
     d: 'No data, no GPS, no server — 112 stays one tap away on every screen. The app must never be the only path to help.',
   },
   {
-    icon: ShieldCheck,
     t: 'Location only during an emergency',
     d: 'Your position is streamed while a report is active and at no other time. There is no background tracking.',
   },
@@ -77,12 +72,11 @@ export default function Home() {
               Emergency SOS
             </Button>
             <Button to="/services" variant="outline" size="lg">
-              See what it covers <ArrowRight size={16} aria-hidden="true" />
+              See what it covers
             </Button>
           </div>
 
-          <p className="mt-6 flex items-center gap-2 text-small text-ink-3">
-            <PhoneCall size={14} aria-hidden="true" />
+          <p className="mt-6 text-small text-ink-3">
             In a real emergency right now, call{' '}
             <a href="tel:112" className="font-semibold text-ink">
               112
@@ -147,7 +141,7 @@ export default function Home() {
             </h2>
           </div>
           <Link to="/services" className="text-small font-semibold no-underline">
-            All services <ArrowRight size={14} className="inline" aria-hidden="true" />
+            All services
           </Link>
         </div>
 
@@ -189,10 +183,9 @@ export default function Home() {
       <section className="mx-auto max-w-shell px-5 pb-20 md:px-8">
         <CardLabel>Design commitments</CardLabel>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {PRINCIPLES.map(({ icon: Icon, t, d }) => (
+          {PRINCIPLES.map(({ t, d }) => (
             <Card key={t} className="p-6">
-              <Icon size={18} className="text-civic" aria-hidden="true" />
-              <h3 className="mt-3 text-h3 text-ink">{t}</h3>
+              <h3 className="text-h3 text-ink">{t}</h3>
               <p className="mt-2 max-w-prose text-small text-ink-2">{d}</p>
             </Card>
           ))}

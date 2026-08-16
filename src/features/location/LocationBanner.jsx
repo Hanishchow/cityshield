@@ -1,4 +1,3 @@
-import { MapPin, AlertTriangle, LoaderCircle } from 'lucide-react';
 import StatusPill from '../../components/ui/StatusPill.jsx';
 import { accuracyBand, metres } from '../../lib/utils/format.js';
 
@@ -17,8 +16,7 @@ const SOURCE_LABEL = {
 export default function LocationBanner({ ping, locating, error }) {
   if (error) {
     return (
-      <div className="flex items-start gap-3 rounded-md border border-signal/30 bg-signal-tint px-4 py-3">
-        <AlertTriangle size={16} className="mt-0.5 shrink-0 text-signal" aria-hidden="true" />
+      <div className="rounded-md border-l-2 border-signal bg-signal-tint px-4 py-3">
         <div className="text-small">
           <p className="font-semibold text-ink">Location unavailable</p>
           <p className="text-ink-2">{error}</p>
@@ -36,18 +34,8 @@ export default function LocationBanner({ ping, locating, error }) {
 
   if (!ping) {
     return (
-      <div className="flex items-center gap-3 rounded-md border border-line bg-surface px-4 py-3 text-small text-ink-2">
-        {locating ? (
-          <>
-            <LoaderCircle size={16} className="shrink-0 text-civic" aria-hidden="true" />
-            Acquiring your location…
-          </>
-        ) : (
-          <>
-            <MapPin size={16} className="shrink-0 text-ink-3" aria-hidden="true" />
-            Location will be captured when you report.
-          </>
-        )}
+      <div className="rounded-md border border-line bg-surface px-4 py-3 text-small text-ink-2">
+        {locating ? 'Acquiring your location…' : 'Location will be captured when you report.'}
       </div>
     );
   }
@@ -56,11 +44,10 @@ export default function LocationBanner({ ping, locating, error }) {
 
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-md border border-line bg-surface px-4 py-3">
-      <MapPin size={16} className="shrink-0 text-civic" aria-hidden="true" />
       <span className="font-mono text-small tabular-nums text-ink">
         {ping.lat.toFixed(5)}, {ping.lng.toFixed(5)}
       </span>
-      <StatusPill tone={band.tone} dot={false}>
+      <StatusPill tone={band.tone}>
         {band.label} {metres(ping.accuracy)}
       </StatusPill>
       <span className="text-label uppercase tracking-wide text-ink-3">

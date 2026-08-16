@@ -189,7 +189,10 @@ function renderFrame(ctx, t, scale) {
   ctx.rotate(-0.048);
   ctx.translate(-W / 2, -H / 2);
 
-  const gridA = smooth(remap(t, 0, 0.12));
+  // The city is present from the very first frame. An earlier version faded the
+  // grid in from t=0, which made frame 0 — and therefore the poster and the
+  // whole top of the page — completely blank.
+  const gridA = 1;
 
   // Lake — Bengaluru reads wrong without water
   ctx.globalAlpha = gridA;
@@ -237,7 +240,7 @@ function renderFrame(ctx, t, scale) {
   ctx.globalAlpha = 1;
 
   /* ----- incident ignites ----- */
-  const incidentIn = smooth(remap(t, 0.15, 0.26));
+  const incidentIn = smooth(remap(t, 0.1, 0.2));
   const fade = 1 - smooth(remap(t, 0.9, 1)) * 0.45; // red recedes at the end
 
   if (incidentIn > 0) {

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, Check } from 'lucide-react';
 import Card, { CardLabel } from '../components/ui/Card.jsx';
 import Button from '../components/ui/Button.jsx';
 import MockNotice from '../components/ui/MockNotice.jsx';
@@ -26,10 +25,8 @@ export default function Report() {
   if (reference) {
     return (
       <div className="mx-auto max-w-2xl px-5 py-20 md:px-8">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ok-tint">
-          <Check size={22} className="text-ok" aria-hidden="true" />
-        </div>
-        <h1 className="mt-5 text-h1 text-ink">Report submitted</h1>
+        <p className="text-label font-semibold uppercase tracking-wide text-ok">Submitted</p>
+        <h1 className="mt-3 text-h1 text-ink">Report submitted</h1>
         <p className="mt-3 text-body text-ink-2">
           Keep this reference to follow up with the ward office.
         </p>
@@ -110,7 +107,7 @@ export default function Report() {
             <div className="text-small text-ink-2">Helps the ward engineer prioritise.</div>
           </div>
           <Button type="button" variant="quiet" size="sm">
-            <Camera size={15} aria-hidden="true" /> Attach
+            Attach
           </Button>
         </Card>
 

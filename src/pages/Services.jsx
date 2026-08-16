@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
 import Card, { CardLabel } from '../components/ui/Card.jsx';
 import StatusPill from '../components/ui/StatusPill.jsx';
 import Button from '../components/ui/Button.jsx';
@@ -69,7 +68,6 @@ export default function Services() {
                     full
                   >
                     {c.severity === 'civic' ? 'Report this' : 'Emergency SOS'}
-                    <ArrowRight size={14} aria-hidden="true" />
                   </Button>
                 </Card>
               ))}
@@ -89,7 +87,7 @@ export default function Services() {
             Emergency SOS
           </Button>
           <Link to="/about" className="self-center text-small font-semibold no-underline">
-            How routing works <ArrowRight size={14} className="inline" aria-hidden="true" />
+            How routing works
           </Link>
         </div>
       </div>

@@ -63,9 +63,11 @@ for (const set of SETS) {
   );
 }
 
-// Poster = frame 0 of the desktop set. Used for reduced-motion, Save-Data,
-// decode failure, and as the preloaded LCP element.
-copyFileSync(join(OUT, 'frames', 'desktop', 'f0000.webp'), join(OUT, 'poster.webp'));
+// Poster = the FINAL frame, not the first. It is the still shown for
+// reduced-motion, Save-Data and decode failure, so it should carry the whole
+// message — agencies converged and interlinked — rather than an empty city.
+const posterFrame = `f${String(frameCount - 1).padStart(4, '0')}.webp`;
+copyFileSync(join(OUT, 'frames', 'desktop', posterFrame), join(OUT, 'poster.webp'));
 
 writeFileSync(
   join(OUT, 'frames.json'),
