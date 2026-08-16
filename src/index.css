@@ -1,0 +1,13 @@
+@import './styles/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './styles/base.css';
+
+html,
+body,
+#root {
+  min-height: 100%;
+}

@@ -1,0 +1,78 @@
+/* City Shield design tokens — see docs/FRONTEND-SPEC.md §2
+   No component may reference a raw hex. Everything routes through these. */
+
+:root {
+  /* Ground */
+  --ground: #fbfaf8;
+  --surface: #ffffff;
+  --sunken: #f3f1ed;
+
+  /* Ink */
+  --ink: #12151a;
+  --ink-2: #454c58;
+  --ink-3: #6b7480;
+
+  /* Line */
+  --line: #e3e0da;
+  --line-strong: #cfcbc3;
+
+  /* Signal — CRITICAL STATES ONLY. See §2.4 usage discipline. */
+  --signal: #c8102e;
+  --signal-hover: #a50d25;
+  --signal-tint: #fdf2f3;
+
+  /* Civic — primary actions, agency chrome */
+  --civic: #1e3a5f;
+  --civic-hover: #162c49;
+  --civic-tint: #edf2f8;
+
+  /* Status */
+  --ok: #1b7f5a;
+  --ok-tint: #edf7f2;
+  --warn: #9a5109;
+  --warn-tint: #fdf4e9;
+
+  --focus: #1e3a5f;
+
+  /* Elevation — deliberately minimal. No glow, ever. */
+  --shadow-sm: 0 1px 2px rgba(18, 21, 26, 0.06);
+  --shadow-md: 0 4px 12px rgba(18, 21, 26, 0.08);
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur-state: 120ms;
+  --dur-transition: 200ms;
+  --dur-entrance: 400ms;
+}
+
+[data-theme='dark'] {
+  --ground: #0e1116;
+  --surface: #161a21;
+  --sunken: #0a0d11;
+
+  --ink: #f2f4f7;
+  --ink-2: #b4bcc8;
+  --ink-3: #828c9b;
+
+  --line: #242a33;
+  --line-strong: #333b47;
+
+  /* Signal and civic lighten on dark ground — the light-theme hexes would fail contrast */
+  --signal: #ff4d5e;
+  --signal-hover: #ff6b79;
+  --signal-tint: #2a1114;
+
+  --civic: #7ba7db;
+  --civic-hover: #9cbfe8;
+  --civic-tint: #131c28;
+
+  --ok: #3fbf8a;
+  --ok-tint: #10231b;
+  --warn: #e0913a;
+  --warn-tint: #241a0e;
+
+  --focus: #7ba7db;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
