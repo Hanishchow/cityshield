@@ -12,6 +12,7 @@ import { EMERGENCY_CATEGORIES } from '../lib/incident/routing.js';
 import { AGENCY_LABEL } from '../lib/incident/model.js';
 import Seo from '../components/seo/Seo.jsx';
 import Breadcrumbs from '../components/seo/Breadcrumbs.jsx';
+import SyncNotice from '../components/ui/SyncNotice.jsx';
 
 /**
  * The emergency path.
@@ -42,6 +43,7 @@ export default function Sos() {
     cancel,
     reset,
     notifyAgencies,
+    sync,
   } = useIncident();
 
   const [countdown, setCountdown] = useState(null);
@@ -112,6 +114,14 @@ export default function Sos() {
               <StatusPill tone="signal">Report open</StatusPill>
               <span className="font-data text-small text-ink-3">{incident.id}</span>
             </div>
+
+            {/* Placed directly under the reference, before the question. Whether
+                an agency actually has this report outranks anything below it. */}
+            <SyncNotice
+              status={sync?.status}
+              reference={sync?.reference}
+              className="mt-4"
+            />
 
             <h1 className="mt-4 text-h1 text-ink">What is happening?</h1>
             <p className="mt-3 max-w-prose text-lead text-ink-2">
@@ -205,7 +215,7 @@ export default function Sos() {
             <HoldToCommit
               onPressStart={startLocating}
               onPressEnd={() => {}}
-              onCommit={() => commit({ category: 'unknown', severity: 'critical' })}
+              onCommit={() => commit({ category: 'unknown', severity: 'critical', sos: true })}
             />
             <MockNotice className="mt-8">
               This is a prototype. No emergency service is contacted by this button, and the

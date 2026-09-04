@@ -17,6 +17,7 @@ const HOLD_MS = 2000;
 export default function HoldToCommit({ onPressStart, onPressEnd, onCommit, disabled }) {
   const [progress, setProgress] = useState(0);
   const rafRef = useRef(0);
+  const timerRef = useRef(0);
   const startRef = useRef(0);
   const activeRef = useRef(false);
   const committedRef = useRef(false);
@@ -24,25 +25,36 @@ export default function HoldToCommit({ onPressStart, onPressEnd, onCommit, disab
   const stop = useCallback(() => {
     activeRef.current = false;
     cancelAnimationFrame(rafRef.current);
+    clearTimeout(timerRef.current);
     rafRef.current = 0;
+    timerRef.current = 0;
     if (!committedRef.current) {
       setProgress(0);
       onPressEnd?.();
     }
   }, [onPressEnd]);
 
+  /* Draws the ring only. It must never be the thing that decides the hold
+     completed: requestAnimationFrame is throttled in background tabs, under
+     low-power mode, and on some devices when the screen dims. A hold that
+     silently fails to commit because frames stopped arriving is the worst
+     possible failure on this control. */
   const tick = useCallback(() => {
     if (!activeRef.current) return;
     const elapsed = performance.now() - startRef.current;
-    const p = Math.min(1, elapsed / HOLD_MS);
-    setProgress(p);
-    if (p >= 1) {
-      committedRef.current = true;
-      activeRef.current = false;
-      onCommit?.();
-      return;
-    }
-    rafRef.current = requestAnimationFrame(tick);
+    setProgress(Math.min(1, elapsed / HOLD_MS));
+    if (elapsed < HOLD_MS) rafRef.current = requestAnimationFrame(tick);
+  }, []);
+
+  /* The authority on whether the hold completed. Timers keep running when
+     frames do not. */
+  const fire = useCallback(() => {
+    if (!activeRef.current) return;
+    committedRef.current = true;
+    activeRef.current = false;
+    cancelAnimationFrame(rafRef.current);
+    setProgress(1);
+    onCommit?.();
   }, [onCommit]);
 
   const start = useCallback(() => {
@@ -51,9 +63,16 @@ export default function HoldToCommit({ onPressStart, onPressEnd, onCommit, disab
     startRef.current = performance.now();
     onPressStart?.();
     rafRef.current = requestAnimationFrame(tick);
-  }, [disabled, onPressStart, tick]);
+    timerRef.current = setTimeout(fire, HOLD_MS);
+  }, [disabled, onPressStart, tick, fire]);
 
-  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
+  useEffect(
+    () => () => {
+      cancelAnimationFrame(rafRef.current);
+      clearTimeout(timerRef.current);
+    },
+    [],
+  );
 
   const R = 96;
   const C = 2 * Math.PI * R;

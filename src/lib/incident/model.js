@@ -81,6 +81,7 @@ export function createIncident({
   channel = 'app',
   reportedBy = null,
   origin = null,
+  sos = false,
 } = {}) {
   const now = new Date().toISOString();
   return {
@@ -91,6 +92,11 @@ export function createIncident({
     category,
     severity,
     silent,
+    /* Raised from the hold control rather than the report form. Carried
+       explicitly because the server routes and prioritises the two
+       differently, and inferring it from `channel` downstream would be a
+       guess. */
+    sos,
     description,
     media: [],
     origin,

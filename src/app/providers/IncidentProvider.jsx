@@ -4,6 +4,7 @@ import { transition, isTerminal } from '../../lib/incident/machine.js';
 import { route, reconcileSeverity } from '../../lib/incident/routing.js';
 import { geolocation, dispatch } from '../../lib/services/index.js';
 import { IncidentContext } from './incidentContext.js';
+import useIncidentSync from './useIncidentSync.js';
 
 const initial = {
   incident: null,
@@ -38,6 +39,7 @@ function reducer(state, action) {
         category: action.category ?? 'unknown',
         severity: action.severity ?? 'critical',
         silent: action.silent ?? false,
+        sos: action.sos ?? false,
         origin: state.lastPing,
       });
       return { ...state, incident };
@@ -98,6 +100,10 @@ export function IncidentProvider({ children }) {
   const [state, dispatchAction] = useReducer(reducer, initial);
   const unwatchRef = useRef(null);
 
+  /* Mirrors the local incident to the API. Deliberately does not gate anything:
+     the interface reads from local state whether or not this succeeds. */
+  const sync = useIncidentSync(state.incident);
+
   /** Begin acquiring location. Called on SOS press-DOWN, before commit (PRD §9.1). */
   const startLocating = useCallback(() => {
     if (unwatchRef.current) return;
@@ -144,6 +150,7 @@ export function IncidentProvider({ children }) {
   const value = useMemo(
     () => ({
       ...state,
+      sync,
       startLocating,
       stopLocating,
       commit,
@@ -155,7 +162,7 @@ export function IncidentProvider({ children }) {
         dispatchAction({ type: 'agencyState', taskId, patch }),
       advance: (to, actor) => dispatchAction({ type: 'transition', to, actor }),
     }),
-    [state, startLocating, stopLocating, commit, classify, cancel, reset, notifyAgencies],
+    [state, sync, startLocating, stopLocating, commit, classify, cancel, reset, notifyAgencies],
   );
 
   return <IncidentContext.Provider value={value}>{children}</IncidentContext.Provider>;
