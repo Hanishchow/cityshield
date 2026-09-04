@@ -2,15 +2,14 @@ import { NavLink } from 'react-router-dom';
 import { cn } from '../../lib/utils/format.js';
 
 const ITEMS = [
-  { to: '/', label: 'Overview', end: true },
-  { to: '/services', label: 'Services' },
+  { to: '/', label: 'Home', end: true },
   { to: '/sos', label: 'SOS', emphasis: true },
   { to: '/report', label: 'Report' },
 ];
 
 /**
  * Text-only. Generic pictograms read as template decoration, and a label alone
- * is unambiguous — an icon would add nothing here but noise.
+ * is unambiguous - an icon would add nothing here but noise.
  */
 export default function MobileNav() {
   return (

@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react';
-import Card, { CardLabel } from '../components/ui/Card.jsx';
 import Button from '../components/ui/Button.jsx';
 import StatusPill from '../components/ui/StatusPill.jsx';
+import Panel from '../components/ui/Panel.jsx';
+import Section from '../components/layout/Section.jsx';
 import MockNotice from '../components/ui/MockNotice.jsx';
+import DataTable from '../components/ui/DataTable.jsx';
 import LocationBanner from '../features/location/LocationBanner.jsx';
 import { useIncident } from '../app/providers/incidentContext.js';
 import { AGENCY_LABEL, AGENCY_TASK_LABEL, SEVERITY_LABEL } from '../lib/incident/model.js';
 import { STATES, PROGRESS_STATES, progressIndex } from '../lib/incident/machine.js';
 import { clockTime, elapsed } from '../lib/utils/format.js';
 
+/** Emergency path: opaque surfaces only, no glass, no entrance animation. */
+
 const TASK_TONE = {
   notified: 'neutral',
-  accepted: 'civic',
+  accepted: 'accent',
   en_route: 'warn',
   on_scene: 'ok',
   cleared: 'ok',
@@ -23,18 +27,14 @@ export default function Track() {
     useIncident();
   const [, forceTick] = useState(0);
 
-  // Ticking clock for elapsed times
   useEffect(() => {
     const iv = setInterval(() => forceTick((n) => n + 1), 1000);
     return () => clearInterval(iv);
   }, []);
 
-  /**
-   * SIMULATED agency progression. This stands in for the Tier 2 dispatch
-   * integration that requires a government MoU (PRD §11). It is labelled as
-   * simulated everywhere it surfaces — cross-cutting invariant 1 forbids
-   * presenting invented state as real.
-   */
+  /* SIMULATED agency progression, standing in for the Tier 2 dispatch
+     integration that requires a government MoU. Labelled as simulated
+     everywhere it surfaces. */
   useEffect(() => {
     if (!incident || incident.state !== 'routed') return undefined;
     const timers = [];
@@ -59,161 +59,152 @@ export default function Track() {
 
   if (!incident) {
     return (
-      <div className="mx-auto max-w-2xl px-5 py-20 text-center md:px-8">
-        <h1 className="text-h1 text-ink">No active report</h1>
-        <p className="mt-3 text-body text-ink-2">
-          This tracking link has no incident attached in this session. In the real
-          product a guardian link would load the incident from the server.
+      <Section className="pt-6"><Panel read className="p-6 md:p-10">
+        <StatusPill tone="neutral">No active report</StatusPill>
+        <h1 className="mt-4 text-h1 text-ink">Nothing to track here</h1>
+        <p className="mt-3 max-w-prose text-lead text-ink-2">
+          This link has no incident attached in this session. In the finished product a
+          guardian link would load the incident from the server.
         </p>
-        <div className="mt-8 flex justify-center gap-3">
-          <Button to="/sos" variant="signal">
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Button to="/sos" variant="signal" size="lg">
             Start an emergency report
           </Button>
-          <Button href="tel:112" variant="outline">
+          <Button href="tel:112" variant="outline" size="lg">
             Call 112
           </Button>
         </div>
-      </div>
+      </Panel></Section>
     );
   }
 
   const current = progressIndex(incident.state);
 
   return (
-    <div className="mx-auto max-w-shell px-5 py-10 md:px-8">
+    <Section className="pt-6">
       <div aria-live="polite" className="sr-only">
         Incident status: {STATES[incident.state]?.label}
       </div>
 
-      <div className="flex flex-wrap items-start justify-between gap-4">
+      {/* Header rail */}
+      <Panel read className="flex flex-wrap items-start justify-between gap-5 p-6 md:p-8">
         <div>
-          <CardLabel>Incident {incident.id}</CardLabel>
-          <h1 className="mt-2 text-h1 text-ink">{STATES[incident.state]?.label}</h1>
-          <p className="mt-1 text-small text-ink-2">
-            Reported {clockTime(incident.createdAt)} · running{' '}
-            <span className="tabular-nums">{elapsed(incident.createdAt)}</span>
+          <div className="flex flex-wrap items-center gap-3">
+            <StatusPill tone={incident.severity === 'critical' ? 'signal' : 'warn'}>
+              {SEVERITY_LABEL[incident.severity]}
+            </StatusPill>
+            <span className="font-data text-small text-ink-3">{incident.id}</span>
+          </div>
+          <h1 className="mt-3 text-h1 text-ink">{STATES[incident.state]?.label}</h1>
+          <p className="mt-2 text-small text-ink-2">
+            Reported <time>{clockTime(incident.createdAt)}</time> &middot; running{' '}
+            <span className="font-data">{elapsed(incident.createdAt)}</span>
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <StatusPill tone={incident.severity === 'critical' ? 'signal' : 'warn'}>
-            {SEVERITY_LABEL[incident.severity]}
-          </StatusPill>
+        <div className="flex flex-wrap gap-2">
+          <Button to={`/live/${incident.id}`} variant="frame" size="lg">
+            Track live
+          </Button>
+          <Button href="tel:112" variant="signal" size="lg">
+            Call 112
+          </Button>
         </div>
-      </div>
+      </Panel>
 
       <MockNotice className="mt-6">
         Agency responses below are <strong>simulated</strong>. Direct dispatch requires a
-        government integration that does not exist yet — see the PRD. Your location is
-        real if you granted permission.
+        government integration that does not exist yet. Your location is real if you granted
+        permission.
       </MockNotice>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[1.3fr_1fr]">
-        {/* Agencies — the interconnection made visible */}
-        <div className="space-y-6">
-          <Card className="p-6">
-            <CardLabel>Agencies on this incident</CardLabel>
-            <p className="mt-2 max-w-prose text-small text-ink-2">
-              All of these are attached to the same record. Each can see the others&apos;
-              status — that is the point.
-            </p>
+      <div className="mt-5 grid gap-5 lg:grid-cols-12">
+        {/* Agencies - the interconnection, made visible */}
+        <Panel read className="p-6 md:p-8 lg:col-span-7">
+          <h2 className="text-h2 text-ink">Agencies on this incident</h2>
+          <p className="mt-2 max-w-prose text-small text-ink-2">
+            All of these are attached to the same record. Each can see the others&apos;
+            status - that is the point of the product.
+          </p>
 
-            <ul className="mt-5 space-y-3">
-              {incident.agencies.map((task) => (
-                <li
-                  key={task.id}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-line bg-sunken px-4 py-3.5"
-                >
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-small font-semibold text-ink">
-                        {AGENCY_LABEL[task.agency]}
-                      </span>
-                      <span className="text-label uppercase tracking-wide text-ink-3">
-                        {task.role}
-                      </span>
-                    </div>
-                    <div className="mt-0.5 text-small text-ink-2">
-                      {task.unit ? task.unit.id : 'No unit assigned yet'}
-                    </div>
-                  </div>
-                  <StatusPill tone={TASK_TONE[task.state]}>
-                    {AGENCY_TASK_LABEL[task.state]}
-                  </StatusPill>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-6">
+            <DataTable
+              rowKey="id"
+              columns={[
+                { key: 'agency', header: 'Agency', strong: true },
+                { key: 'role', header: 'Role' },
+                { key: 'unit', header: 'Unit', mono: true },
+                { key: 'state', header: 'Status', align: 'right' },
+              ]}
+              rows={incident.agencies.map((t) => ({
+                id: t.id,
+                agency: AGENCY_LABEL[t.agency],
+                role: t.role,
+                unit: t.unit ? t.unit.id : '-',
+                state: (
+                  <StatusPill tone={TASK_TONE[t.state]}>{AGENCY_TASK_LABEL[t.state]}</StatusPill>
+                ),
+              }))}
+            />
+          </div>
 
-            {incident.agencies.length === 0 && (
-              <p className="mt-4 text-small text-ink-3">No agencies attached yet.</p>
-            )}
-          </Card>
-
-          <Card className="p-6">
-            <CardLabel>Your location</CardLabel>
+          <div className="mt-8 rounded-md border border-line/70 bg-ink/[0.035] p-5">
+            <h3 className="text-h3 text-ink">Your location</h3>
             <div className="mt-3">
               <LocationBanner ping={lastPing} locating={locating} error={locationError} />
             </div>
             <p className="mt-3 text-small text-ink-3">
               {incident.locationTrack.length} position update
-              {incident.locationTrack.length === 1 ? '' : 's'} recorded since reporting.
-              Streaming stops when this incident closes.
+              {incident.locationTrack.length === 1 ? '' : 's'} since reporting. Streaming stops
+              when this incident closes.
             </p>
-          </Card>
-        </div>
+          </div>
+        </Panel>
 
-        {/* Timeline — every entry backed by a real state transition */}
-        <div className="space-y-6">
-          <Card className="p-6">
-            <CardLabel>Status</CardLabel>
-            <ol className="mt-4">
+        {/* Timeline - every entry backed by a real state transition */}
+        <div className="lg:col-span-5">
+          <Panel read className="p-6">
+            <h2 className="text-h3 text-ink">Status</h2>
+            <ol className="mt-5">
               {PROGRESS_STATES.map((s, i) => {
                 const entry = incident.stateHistory.find((h) => h.state === s);
                 const done = current >= i && current !== -1;
                 const isLast = i === PROGRESS_STATES.length - 1;
                 return (
-                  <li key={s} className="flex gap-3">
+                  <li key={s} className="flex gap-4">
                     <div className="flex flex-col items-center">
                       <span
-                        className={`h-4 w-4 shrink-0 rounded-full border-2 ${
-                          done ? 'border-civic bg-civic' : 'border-line-strong bg-surface'
+                        className={`h-3 w-3 shrink-0 rounded-full border-2 ${
+                          done ? 'border-accent bg-accent' : 'border-line-strong bg-surface'
                         }`}
                         aria-hidden="true"
                       />
                       {!isLast && (
                         <span
-                          className={`w-px flex-1 ${done ? 'bg-civic' : 'bg-line'}`}
-                          style={{ minHeight: 26 }}
+                          className={`w-px flex-1 ${done ? 'bg-accent' : 'bg-line'}`}
+                          style={{ minHeight: 30 }}
                           aria-hidden="true"
                         />
                       )}
                     </div>
-                    <div className="pb-5">
-                      <div
-                        className={`text-small font-medium ${done ? 'text-ink' : 'text-ink-3'}`}
-                      >
+                    <div className="pb-6">
+                      <div className={`text-small font-medium ${done ? 'text-ink' : 'text-ink-3'}`}>
                         {STATES[s].label}
                       </div>
-                      {entry ? (
-                        <div className="text-label tabular-nums text-ink-3">
-                          {clockTime(entry.at)}
-                        </div>
-                      ) : (
-                        <div className="text-label text-ink-3">Not yet</div>
-                      )}
+                      <div className="font-data text-micro text-ink-3">
+                        {entry ? clockTime(entry.at) : 'Not yet'}
+                      </div>
                     </div>
                   </li>
                 );
               })}
             </ol>
-          </Card>
 
-          <Card className="p-6">
-            <CardLabel>Actions</CardLabel>
-            <div className="mt-4 space-y-2">
-              <Button href="tel:112" variant="signal" full>
-                Call 112
-              </Button>
-              <Button variant="outline" full onClick={() => navigator.share?.({ url: window.location.href })}>
+            <div className="mt-2 space-y-2 border-t border-line pt-5">
+              <Button
+                variant="outline"
+                full
+                onClick={() => navigator.share?.({ url: window.location.href })}
+              >
                 Share tracking link
               </Button>
               <Button variant="ghost" full onClick={cancel}>
@@ -223,9 +214,9 @@ export default function Track() {
                 Close and start over
               </Button>
             </div>
-          </Card>
+          </Panel>
         </div>
       </div>
-    </div>
+    </Section>
   );
 }

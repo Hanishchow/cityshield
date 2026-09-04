@@ -1,196 +1,247 @@
-import { Link } from 'react-router-dom';
-import ScrollHero from '../components/hero/ScrollHero.jsx';
 import Button from '../components/ui/Button.jsx';
-import Card, { CardLabel } from '../components/ui/Card.jsx';
+import Section from '../components/layout/Section.jsx';
 import StatusPill from '../components/ui/StatusPill.jsx';
+import DataTable from '../components/ui/DataTable.jsx';
+import Readout from '../components/ui/Readout.jsx';
+import VideoSlot from '../components/ui/VideoSlot.jsx';
+import LocationGate from '../features/location/LocationGate.jsx';
 import { EMERGENCY_CATEGORIES } from '../lib/incident/routing.js';
 import { AGENCY_LABEL } from '../lib/incident/model.js';
 
-const STEPS = [
-  {
-    n: '01',
-    t: 'You report once',
-    d: 'Hold the SOS button, or pick what is happening. You never have to know which department handles it.',
-  },
-  {
-    n: '02',
-    t: 'Your location is sensed, not described',
-    d: 'GPS streams continuously with its accuracy shown honestly — responders see a track, not a guess.',
-  },
-  {
-    n: '03',
-    t: 'Every agency joins the same record',
-    d: 'Ambulance, police and civic attach to one incident. They can see each other, so nobody arrives blind.',
-  },
-  {
-    n: '04',
-    t: 'You watch it happen',
-    d: 'Each agency shows its real state. Nothing is displayed unless it actually occurred.',
-  },
+const HELPLINES = [
+  { n: '112', service: 'All emergencies (ERSS)', note: 'National; awareness is low' },
+  { n: '100', service: 'Police', note: 'Being folded into 112' },
+  { n: '101', service: 'Fire & rescue', note: '' },
+  { n: '108', service: 'Ambulance', note: 'State EMS operator' },
+  { n: '1091', service: "Women's helpline", note: '' },
+  { n: '1098', service: 'Childline', note: '' },
+  { n: '1077', service: 'District disaster control', note: '' },
+  { n: '1533', service: 'BBMP civic', note: 'Non-emergency' },
 ];
 
-const PRINCIPLES = [
+const STEPS = [
+  { n: '01', t: 'Report once', d: 'One hold, or one category. You never choose a department.' },
+  { n: '02', t: 'Location is sensed', d: 'Continuous GPS with its accuracy shown, not a described address.' },
+  { n: '03', t: 'Agencies attach', d: 'Ambulance, police and civic join one record and can see each other.' },
+  { n: '04', t: 'You watch it', d: 'Every status shown is backed by a real event. Nothing is invented.' },
+];
+
+const COMMITMENTS = [
   {
     t: 'One incident, many agencies',
-    d: 'A road accident needs ambulance, police and civic. Today that is three calls and three blind dispatches. Here it is one record they all share.',
+    d: 'A road accident needs ambulance, police and civic. Today that is three calls and three blind dispatches. Here it is one record they all share, and any of them can pull in another without the citizen repeating themselves.',
   },
   {
-    t: 'Location with its uncertainty attached',
-    d: 'We show the accuracy radius, never a falsely precise pin. A 60-metre fix drawn as a 2-metre dot is dangerous.',
+    t: 'Location carries its uncertainty',
+    d: 'Responders see the accuracy radius and the fix source, never a falsely precise pin. A 60-metre fix drawn as a 2-metre dot sends a crew to the wrong side of a flyover.',
   },
   {
-    t: 'Degrades to a phone call',
-    d: 'No data, no GPS, no server — 112 stays one tap away on every screen. The app must never be the only path to help.',
+    t: 'It degrades to a phone call',
+    d: 'No data, no GPS, no server — 112 stays one tap away on every screen, including every error state. The app must never be the only path to help.',
   },
   {
     t: 'Location only during an emergency',
-    d: 'Your position is streamed while a report is active and at no other time. There is no background tracking.',
+    d: 'Your position is streamed while a report is active and at no other time. There is no background tracking, and the track is deleted after the review window.',
   },
 ];
 
+const COMPLIANCE = [
+  ['WCAG 2.1 AA', 'ok'],
+  ['DPDP Act 2023', 'ok'],
+  ['Works without data', 'accent'],
+  ['No background tracking', 'accent'],
+  ['Open routing table', 'neutral'],
+];
+
+/** Section heading. A rule and a label, not another enclosing box. */
+function Head({ index, title, lead }) {
+  return (
+    <header className="mb-7">
+      <div className="flex items-baseline gap-3">
+        <span className="font-data text-micro text-ink-3">{index}</span>
+        <h2 className="text-h2 text-ink">{title}</h2>
+      </div>
+      {lead && <p className="mt-3 max-w-prose text-small text-ink-2">{lead}</p>}
+    </header>
+  );
+}
+
+/**
+ * The single page.
+ *
+ * Everything a first-time visitor needs is here in one scroll: what it is, what
+ * it covers, how it works, and the control itself. The separate marketing routes
+ * still exist for deep links, but nobody should have to navigate to understand
+ * the product — in an emergency product, a nav bar is a failure mode.
+ */
 export default function Home() {
   return (
     <>
-      <ScrollHero>
-        <div className="max-w-xl">
-          <StatusPill tone="civic">Bengaluru · Prototype</StatusPill>
+      {/* Hero */}
+      <Section className="pb-4 pt-6">
+        <div className="grid items-center gap-10 lg:grid-cols-12">
+          <div className="lg:col-span-8">
+            <h1 className="text-[2.6rem] leading-[1.0] tracking-[-0.035em] md:text-display">
+              <span className="block font-light text-ink-3">Six helplines.</span>
+              <span className="block font-extrabold text-ink">One incident.</span>
+            </h1>
 
-          <h1 className="mt-5 text-[2.5rem] leading-[1.05] tracking-tight text-ink md:text-display">
-            Six helplines.
-            <br />
-            <span className="font-serif-display italic">One incident.</span>
-          </h1>
+            <p className="mt-6 max-w-prose text-lead text-ink-2">
+              A Bengaluru service that replaces knowing <em>which number to call</em> with a
+              single action, then keeps every responding agency attached to the same record
+              instead of six disconnected phone calls.
+            </p>
 
-          <p className="mt-5 max-w-prose text-body text-ink-2">
-            City Shield replaces knowing <em>which number to call</em> with a single
-            action — then keeps every responding agency attached to the same record
-            instead of six disconnected phone calls.
-          </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Button to="/sos" variant="signal" size="lg">
+                Emergency SOS
+              </Button>
+              <Button to="/report" variant="frame" size="lg">
+                Report something
+              </Button>
+            </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Button to="/sos" variant="signal" size="lg">
-              Emergency SOS
-            </Button>
-            <Button to="/services" variant="outline" size="lg">
-              See what it covers
-            </Button>
+            <p className="mt-6 text-small text-ink-3">
+              Prototype on mock data. In a real emergency, call{' '}
+              <a href="tel:112" className="font-semibold text-ink">
+                112
+              </a>
+              .
+            </p>
           </div>
 
-          <p className="mt-6 text-small text-ink-3">
-            In a real emergency right now, call{' '}
-            <a href="tel:112" className="font-semibold text-ink">
-              112
-            </a>
-          </p>
         </div>
-      </ScrollHero>
+      </Section>
+
+      {/* Location permission. Placed high, because it is the one thing that
+          makes everything below faster, and asked for with a reason attached. */}
+      <Section className="py-4">
+        <LocationGate />
+      </Section>
+
+      {/* Readouts */}
+      <Section className="py-6">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-7 border-t border-line pt-7 md:grid-cols-4 md:divide-x md:divide-line/60">
+          <Readout label="Helplines replaced" value="6" note="One action instead of a taxonomy" />
+          <Readout label="Dispatch target" value="90" unit="s" note="Report to acknowledgement" className="md:pl-8" />
+          <Readout label="Shared record" value="1" note="Per incident, however many agencies" className="md:pl-8" />
+          <Readout label="Fallback" value="112" note="Reachable from every screen" className="md:pl-8" />
+        </div>
+      </Section>
+
+      {/* Instruction video */}
+      <Section className="py-8">
+        <div className="grid gap-8 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <Head index="01" title="See it work" lead="Ninety seconds, start to finish: raising an incident, watching the agencies attach, and following a unit to your door." />
+            <p className="text-small text-ink-3">
+              If you would rather read it, every step is written out below.
+            </p>
+          </div>
+          <div className="lg:col-span-7">
+            <VideoSlot />
+          </div>
+        </div>
+      </Section>
 
       {/* The problem */}
-      <section className="mx-auto max-w-shell px-5 py-20 md:px-8">
-        <div className="grid gap-12 md:grid-cols-[1fr_1.1fr]">
-          <div>
-            <CardLabel>The problem</CardLabel>
-            <h2 className="mt-3 text-h2 text-ink">
-              Every call starts a separate, blind process.
-            </h2>
-          </div>
-          <div className="space-y-4 text-body text-ink-2">
-            <p>
-              In an emergency you are expected to know the taxonomy of Indian emergency
-              services at the worst possible moment — 112, 100, 101, 108, 1091, 1077,
-              1533 — and then describe where you are to each of them in turn.
-            </p>
-            <p>
-              An accident that needs an ambulance, the police and the municipal
-              corporation is three calls, three descriptions, three dispatches, and no
-              shared awareness between any of them.
-            </p>
+      <Section className="py-8">
+        <div className="border-t border-line pt-8">
+          <Head
+            index="02"
+            title="The number you need is the one you forget"
+            lead="Bengaluru runs at least eight public emergency numbers. Under stress, recalling the right one is the first thing that fails — and the wrong one costs a transfer."
+          />
+          <DataTable
+            columns={[
+              { key: 'n', header: 'Number', mono: true, strong: true, width: '6.5rem' },
+              { key: 'service', header: 'Service', strong: true },
+              { key: 'note', header: 'In practice' },
+            ]}
+            rows={HELPLINES}
+            rowKey="n"
+            caption="Public emergency numbers serving Bengaluru today"
+          />
+        </div>
+      </Section>
+
+      {/* Coverage */}
+      <Section className="py-8">
+        <div className="border-t border-line pt-8">
+          <Head
+            index="03"
+            title="What it covers"
+            lead="You pick what happened. The routing table decides who owns it and who else attaches — published here rather than hidden, because a citizen should be able to check where their report went."
+          />
+          <div className="grid gap-x-10 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
+            {EMERGENCY_CATEGORIES.map((c) => (
+              <div key={c.id} className="border-t border-line/70 pt-4">
+                <h3 className="text-body font-semibold text-ink">{c.label}</h3>
+                <p className="mt-1.5 text-small text-ink-2">{c.blurb}</p>
+                <p className="mt-3 font-data text-micro uppercase tracking-[0.09em] text-ink-3">
+                  {[c.primary, ...(c.secondary ?? [])].map((a) => AGENCY_LABEL[a] ?? a).join(' · ')}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
+      </Section>
 
       {/* How it works */}
-      <section className="border-y border-line bg-sunken">
-        <div className="mx-auto max-w-shell px-5 py-20 md:px-8">
-          <CardLabel>How it works</CardLabel>
-          <h2 className="mt-3 max-w-xl text-h2 text-ink">
-            You state what is happening. Routing is our job.
-          </h2>
-
-          <ol className="mt-10 grid gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-4">
+      <Section className="py-8">
+        <div className="border-t border-line pt-8">
+          <Head index="04" title="How it works" />
+          <ol className="grid list-none gap-x-10 gap-y-7 p-0 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s) => (
-              <li key={s.n} className="bg-surface p-6">
-                <span className="text-label font-semibold tabular-nums text-civic">
-                  {s.n}
-                </span>
-                <h3 className="mt-3 text-h3 text-ink">{s.t}</h3>
-                <p className="mt-2 text-small text-ink-2">{s.d}</p>
+              <li key={s.n} className="border-t border-line/70 pt-4">
+                <span className="font-data text-micro text-ink-3">{s.n}</span>
+                <h3 className="mt-2 text-body font-semibold text-ink">{s.t}</h3>
+                <p className="mt-1.5 text-small text-ink-2">{s.d}</p>
               </li>
             ))}
           </ol>
         </div>
-      </section>
+      </Section>
 
-      {/* Routing table, made visible */}
-      <section className="mx-auto max-w-shell px-5 py-20 md:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <CardLabel>Interconnection</CardLabel>
-            <h2 className="mt-3 max-w-xl text-h2 text-ink">
-              What one report actually reaches.
-            </h2>
+      {/* Commitments */}
+      <Section className="py-8">
+        <div className="border-t border-line pt-8">
+          <Head index="05" title="What we commit to" />
+          <div className="grid gap-x-12 gap-y-8 lg:grid-cols-2">
+            {COMMITMENTS.map((c) => (
+              <div key={c.t} className="surface-alert py-1 pl-5">
+                <h3 className="text-body font-semibold text-ink">{c.t}</h3>
+                <p className="mt-2 max-w-prose text-small text-ink-2">{c.d}</p>
+              </div>
+            ))}
           </div>
-          <Link to="/services" className="text-small font-semibold no-underline">
-            All services
-          </Link>
-        </div>
 
-        <div className="mt-8 overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-left">
-            <thead>
-              <tr className="border-b border-line-strong">
-                <th className="pb-3 text-label font-semibold uppercase tracking-wide text-ink-3">
-                  You report
-                </th>
-                <th className="pb-3 text-label font-semibold uppercase tracking-wide text-ink-3">
-                  Primary
-                </th>
-                <th className="pb-3 text-label font-semibold uppercase tracking-wide text-ink-3">
-                  Also notified
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {EMERGENCY_CATEGORIES.slice(0, 7).map((c) => (
-                <tr key={c.id} className="border-b border-line">
-                  <td className="py-3.5 pr-4 text-small font-medium text-ink">{c.label}</td>
-                  <td className="py-3.5 pr-4 text-small text-ink-2">
-                    {AGENCY_LABEL[c.primary]}
-                  </td>
-                  <td className="py-3.5 text-small text-ink-2">
-                    {c.secondary.length
-                      ? c.secondary.map((a) => AGENCY_LABEL[a]).join(', ')
-                      : '—'}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="mt-9 flex flex-wrap items-center gap-2.5 border-t border-line/70 pt-6">
+            {COMPLIANCE.map(([label, tone]) => (
+              <StatusPill key={label} tone={tone}>
+                {label}
+              </StatusPill>
+            ))}
+          </div>
         </div>
-      </section>
+      </Section>
 
-      {/* Principles */}
-      <section className="mx-auto max-w-shell px-5 pb-20 md:px-8">
-        <CardLabel>Design commitments</CardLabel>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {PRINCIPLES.map(({ t, d }) => (
-            <Card key={t} className="p-6">
-              <h3 className="text-h3 text-ink">{t}</h3>
-              <p className="mt-2 max-w-prose text-small text-ink-2">{d}</p>
-            </Card>
-          ))}
+      {/* Close */}
+      <Section className="py-10">
+        <div className="border-t border-line pt-8">
+          <h2 className="max-w-2xl text-h1 text-ink">
+            One action. Every agency that needs to know, already knowing.
+          </h2>
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <Button to="/sos" variant="signal" size="lg">
+              Emergency SOS
+            </Button>
+            <Button to="/report" variant="outline" size="lg">
+              Report something
+            </Button>
+          </div>
         </div>
-      </section>
+      </Section>
     </>
   );
 }

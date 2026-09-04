@@ -2,9 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="icon" type="image/png" href="%BASE_URL%brand/logo-mark-96.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#FBFAF8" />
+    <!-- Theme colour is per colour-scheme: a light chrome bar over a dark app
+         (or the reverse) is the tell that a PWA was never actually installed
+         and tested. -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f6fa" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1b33" />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="%BASE_URL%brand/icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="City Shield" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta
       name="description"
       content="City Shield connects Bengaluru citizens to emergency, medical, fire and civic services through one incident record that every responding agency shares."
@@ -12,6 +21,24 @@
     <!-- Hero poster is the LCP element -->
     <link rel="preload" as="image" href="%BASE_URL%hero/poster.webp" fetchpriority="high" />
     <title>City Shield — one incident, every agency</title>
+    <script>
+      /* Apply the stored palette/theme BEFORE first paint. Two reasons:
+         1. No flash of the wrong theme on load.
+         2. React runs child effects before parent effects, so a page that
+            measures resolved tokens on mount would otherwise read the
+            defaults rather than the user's choice. */
+      (function () {
+        try {
+          var d = document.documentElement;
+          d.setAttribute('data-palette', localStorage.getItem('cs.palette') || 'civic');
+          d.setAttribute('data-theme', localStorage.getItem('cs.theme') || 'light');
+          d.style.colorScheme = d.getAttribute('data-theme');
+        } catch (e) {
+          document.documentElement.setAttribute('data-palette', 'civic');
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

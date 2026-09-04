@@ -1,5 +1,5 @@
 /**
- * Wordmark glyph. A shield outline whose interior is a three-node convergence —
+ * Wordmark glyph. A shield outline whose interior is a three-node convergence -
  * the product thesis (PRD §3) reduced to a mark.
  */
 export default function ShieldMark({ className }) {

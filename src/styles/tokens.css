@@ -1,82 +1,280 @@
-/* City Shield design tokens — see docs/FRONTEND-SPEC.md §2
-   No component may reference a raw hex. Everything routes through these. */
+/* ============================================================================
+   City Shield design tokens — "Instrument Glass"
+   See docs/FRONTEND-SPEC.md and the rebuild plan.
 
+   Two independent axes, both set as attributes on <html>:
+     data-palette = "civic" (from the logo) | "ordnance" (institutional alt)
+     data-theme   = "light" | "dark"
+
+   Three layers: primitives -> semantics -> component tokens.
+   No component may reference a primitive or a raw hex. Semantics only.
+   ========================================================================= */
+
+/* ---------- LAYER 1: primitives ------------------------------------------ */
 :root {
-  /* Ground */
-  --ground: #fbfaf8;
-  --surface: #ffffff;
-  --sunken: #f3f1ed;
-  /* Channels, for gradients and alpha compositing. Tailwind cannot apply an
-     opacity modifier to a var() colour, so anything needing alpha uses these. */
-  --ground-rgb: 251 250 248;
+  /* Civic Chrome — sampled from the CityShield logo */
+  --p-navy-900: #0d1b33;
+  --p-navy-800: #14294f;
+  --p-navy-700: #1c3a6e;
+  --p-royal-600: #2b5ca8;
+  --p-royal-500: #4e7fc4;
+  --p-royal-400: #6fa0e8;
+  --p-ice-500: #a9cce3;
+  --p-ice-300: #dceaf5;
+  --p-chrome-400: #c3cbd5;
+  --p-chrome-200: #e4e9ef;
+  --p-chrome-600: #8d949b;
+  /* Ice ground, not warm paper: cooled to sit with the logo's ice-blue
+     highlights rather than fight them. */
+  --p-paper: #f2f6fa;
+  --p-paper-sunk: #e6eef6;
 
-  /* Ink */
-  --ink: #12151a;
-  --ink-2: #454c58;
-  --ink-3: #6b7480;
+  /* Ordnance — deep bottle green + brass */
+  --p-forest-900: #0a231c;
+  --p-forest-800: #10362b;
+  --p-moss-600: #2f6b54;
+  --p-moss-400: #55a986;
+  --p-brass-600: #7e6029;
+  --p-brass-500: #a8813c;
+  --p-brass-300: #d4b173;
+  --p-bone: #f2f1ea;
+  --p-bone-sunk: #e4e2d8;
 
-  /* Line */
-  --line: #e3e0da;
-  --line-strong: #cfcbc3;
+  /* Shared status */
+  --p-red-600: #c8102e;
+  --p-red-500: #b02a1f;
+  --p-green-600: #1b7f5a;
+  --p-amber-700: #9a5109;
 
-  /* Signal — CRITICAL STATES ONLY. See §2.4 usage discipline. */
-  --signal: #c8102e;
-  --signal-hover: #a50d25;
-  --signal-tint: #fdf2f3;
+  /* ---------- Non-colour scales (palette-independent) ---------- */
 
-  /* Civic — primary actions, agency chrome */
-  --civic: #1e3a5f;
-  --civic-hover: #162c49;
-  --civic-tint: #edf2f8;
+  /* Radius — deliberately NOT uniform. A uniform 16px everywhere is the
+     single most recognisable AI-generated-UI tell. */
+  --r-hair: 2px;
+  --r-xs: 3px;
+  --r-sm: 5px;
+  --r-md: 8px;
+  --r-lg: 14px;
+  --r-pill: 999px;
 
-  /* Status */
-  --ok: #1b7f5a;
-  --ok-tint: #edf7f2;
-  --warn: #9a5109;
-  --warn-tint: #fdf4e9;
-
-  --focus: #1e3a5f;
-
-  /* Elevation — deliberately minimal. No glow, ever. */
-  --shadow-sm: 0 1px 2px rgba(18, 21, 26, 0.06);
-  --shadow-md: 0 4px 12px rgba(18, 21, 26, 0.08);
+  /* Space — 4px base */
+  --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
+  --s-5: 24px;  --s-6: 32px;  --s-7: 48px;  --s-8: 64px;
+  --s-9: 96px;  --s-10: 128px;
 
   /* Motion */
   --ease: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --dur-state: 120ms;
-  --dur-transition: 200ms;
-  --dur-entrance: 400ms;
+  --dur-move: 220ms;
+  --dur-enter: 420ms;
+  --dur-curtain: 520ms;
 }
 
-[data-theme='dark'] {
-  --ground: #0e1116;
-  --surface: #161a21;
-  --sunken: #0a0d11;
-  --ground-rgb: 14 17 22;
+/* ---------- LAYER 2: semantics — Civic Chrome, light (default) ----------- */
+:root,
+[data-palette='civic'] {
+  --ground: var(--p-paper);
+  --ground-rgb: 242 246 250;
+  --surface: #ffffff;
+  --surface-rgb: 255 255 255;
+  --sunken: var(--p-paper-sunk);
 
-  --ink: #f2f4f7;
-  --ink-2: #b4bcc8;
-  --ink-3: #828c9b;
+  --ink: var(--p-navy-900);
+  --ink-2: #3a4a63;
+  --ink-3: #5f7089;
 
-  --line: #242a33;
-  --line-strong: #333b47;
+  --line: #d5e2ed;
+  --line-strong: #7a8ca0;
 
-  /* Signal and civic lighten on dark ground — the light-theme hexes would fail contrast */
+  --accent: var(--p-royal-600);
+  --accent-hover: var(--p-navy-800);
+  --accent-tint: #e3eef9;
+  --accent-contrast: #ffffff;
+
+  --deep: var(--p-navy-800);
+  --deep-rgb: 20 41 79;
+  /* Ice blue reads as the metal here — it is what the emblem's highlights are */
+  --metal: var(--p-ice-500);
+  --metal-light: var(--p-ice-300);
+
+  --signal: var(--p-red-600);
+  --signal-hover: #a50d25;
+  --signal-tint: #fdf2f3;
+  --ok: #187152;
+  --ok-tint: #edf7f2;
+  --warn: var(--p-amber-700);
+  --warn-tint: #fdf4e9;
+
+  --focus: var(--p-royal-600);
+
+  /* Deck field tints (r g b, consumed with an alpha) */
+  --deck-a: 169 204 227;
+  --deck-b: 43 92 168;
+  --deck-c: 195 203 213;
+
+  /* Button frame gradient. Deliberately theme-independent: the label is white
+     in every state, so a stop that lightens in dark mode would fail contrast
+     the moment the inner fill dissolves on hover. */
+  --frame-a: #14294f;
+  --frame-b: #2b5ca8;
+  --frame-c: #1c3a6e;
+}
+
+/* ---------- Civic Chrome, dark ------------------------------------------- */
+[data-palette='civic'][data-theme='dark'] {
+  --ground: #070e1a;
+  --ground-rgb: 7 14 26;
+  --surface: #0f1a2c;
+  --surface-rgb: 15 26 44;
+  --sunken: #050a13;
+
+  --ink: #eaeef5;
+  --ink-2: #aab6c9;
+  --ink-3: #78859a;
+
+  --line: #1c2b45;
+  --line-strong: #5f7495;
+
+  --accent: var(--p-royal-400);
+  --accent-hover: #8fb8f0;
+  --accent-tint: #101d33;
+  --accent-contrast: #06101f;
+
+  --deep: #0a142a;
+  --deep-rgb: 10 20 42;
+  --metal: #6f94b8;
+  --metal-light: var(--p-ice-500);
+
   --signal: #ff4d5e;
   --signal-hover: #ff6b79;
   --signal-tint: #2a1114;
-
-  --civic: #7ba7db;
-  --civic-hover: #9cbfe8;
-  --civic-tint: #131c28;
-
   --ok: #3fbf8a;
-  --ok-tint: #10231b;
+  --ok-tint: #0d2419;
   --warn: #e0913a;
   --warn-tint: #241a0e;
 
-  --focus: #7ba7db;
+  --focus: var(--p-royal-400);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --deck-a: 43 92 168;
+  --deck-b: 111 148 184;
+  --deck-c: 20 41 79;
+}
+
+/* ---------- Ordnance, light ---------------------------------------------- */
+[data-palette='ordnance'] {
+  --ground: var(--p-bone);
+  --ground-rgb: 242 241 234;
+  --surface: #ffffff;
+  --surface-rgb: 255 255 255;
+  --sunken: var(--p-bone-sunk);
+
+  --ink: #101915;
+  --ink-2: #37453d;
+  --ink-3: #5b6862;
+
+  --line: #d5d3c8;
+  --line-strong: #8d8a7d;
+
+  --accent: var(--p-moss-600);
+  --accent-hover: var(--p-forest-800);
+  --accent-tint: #e8f1ec;
+  --accent-contrast: #ffffff;
+
+  --deep: var(--p-forest-800);
+  --deep-rgb: 16 54 43;
+  --metal: var(--p-brass-500);
+  --metal-light: var(--p-brass-300);
+
+  --signal: var(--p-red-500);
+  --signal-hover: #8f2018;
+  --signal-tint: #fdf1ef;
+  --ok: var(--p-moss-600);
+  --ok-tint: #e8f1ec;
+  /* brass fails AA as text at #a8813c (3.16:1) — the text-safe value is darker */
+  --warn: var(--p-brass-600);
+  --warn-tint: #f7f0e2;
+
+  --focus: var(--p-forest-800);
+
+  --deck-a: 168 129 60;
+  --deck-b: 47 107 84;
+  --deck-c: 212 177 115;
+
+  --frame-a: #10362b;
+  --frame-b: #2f6b54;
+  --frame-c: #17493a;
+}
+
+/* ---------- Ordnance, dark ----------------------------------------------- */
+[data-palette='ordnance'][data-theme='dark'] {
+  --ground: #060d0a;
+  --ground-rgb: 6 13 10;
+  --surface: #0e1a15;
+  --surface-rgb: 14 26 21;
+  --sunken: #040907;
+
+  --ink: #e9efea;
+  --ink-2: #a9b8b0;
+  --ink-3: #77877e;
+
+  --line: #1a2b23;
+  --line-strong: #5c7a6c;
+
+  --accent: var(--p-moss-400);
+  --accent-hover: #7cc3a5;
+  --accent-tint: #0d2019;
+  --accent-contrast: #04120c;
+
+  --deep: var(--p-forest-900);
+  --deep-rgb: 10 35 28;
+  --metal: var(--p-brass-500);
+  --metal-light: var(--p-brass-300);
+
+  --signal: #e8584a;
+  --signal-hover: #f07a6e;
+  --signal-tint: #2a1210;
+  --ok: var(--p-moss-400);
+  --ok-tint: #0d2019;
+  --warn: var(--p-brass-300);
+  --warn-tint: #241d0e;
+
+  --focus: var(--p-moss-400);
+
+  --deck-a: 47 107 84;
+  --deck-b: 168 129 60;
+  --deck-c: 16 54 43;
+}
+
+/* ---------- LAYER 3: component tokens ------------------------------------ */
+:root {
+  /* Glass is the surface language for the WHOLE site, not an accent.
+     It stays legible because the deck behind it is a known, controlled field
+     rather than arbitrary imagery — that is the only way a glass UI can
+     guarantee contrast. Blur stays at 14px: past ~16px GPU cost climbs
+     sharply for almost no additional effect. */
+  --glass-blur: 14px;
+  --glass-tint: rgb(var(--surface-rgb) / 0.74);
+  --glass-edge: rgb(255 255 255 / 0.7);
+  --glass-edge-low: rgb(255 255 255 / 0.22);
+  --glass-shadow: 0 20px 60px -30px rgb(var(--deep-rgb) / 0.5);
+  /* Panels carrying long-form reading text sit more opaque than chrome panels */
+  --glass-tint-solid: rgb(var(--surface-rgb) / 0.9);
+
+  /* Elevation — restrained. No glow anywhere. */
+  --shadow-hair: 0 1px 1px rgb(var(--deep-rgb) / 0.05);
+  --shadow-sm: 0 2px 6px -2px rgb(var(--deep-rgb) / 0.10);
+  --shadow-md: 0 12px 32px -16px rgb(var(--deep-rgb) / 0.24);
+
+  /* Instrument layer */
+  --tick: var(--line-strong);
+  --rule-hair: 1px;
+}
+
+[data-theme='dark'] {
+  --glass-tint: rgb(var(--surface-rgb) / 0.62);
+  --glass-tint-solid: rgb(var(--surface-rgb) / 0.86);
+  --glass-edge: rgb(255 255 255 / 0.20);
+  --glass-edge-low: rgb(255 255 255 / 0.09);
+  --glass-shadow: 0 20px 60px -26px rgb(0 0 0 / 0.75);
 }

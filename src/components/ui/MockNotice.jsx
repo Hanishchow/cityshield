@@ -2,7 +2,7 @@ import { cn } from '../../lib/utils/format.js';
 
 /**
  * Labels simulated data as simulated. Cross-cutting invariant 1: no fabricated
- * state. If a value came from a mock adapter, the citizen is told so — an
+ * state. If a value came from a mock adapter, the citizen is told so - an
  * emergency product must never present invented reassurance as fact.
  */
 export default function MockNotice({ children, className, inline = false }) {

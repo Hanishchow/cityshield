@@ -13,7 +13,7 @@ import useFrameSequence from './useFrameSequence.js';
 const DESCRIPTION =
   'An aerial view of a city. A single emergency is reported, three government ' +
   'agencies acknowledge it, and their response routes converge on the same ' +
-  'location — ending connected to each other as well as to the incident.';
+  'location - ending connected to each other as well as to the incident.';
 
 export default function ScrollHero({ children }) {
   const trackRef = useRef(null);
@@ -26,7 +26,7 @@ export default function ScrollHero({ children }) {
 
   const scrubbing = status === 'ready';
 
-  /* Draw loop — one draw per animation frame, never inside the scroll handler. */
+  /* Draw loop - one draw per animation frame, never inside the scroll handler. */
   useEffect(() => {
     if (!scrubbing || !meta) return undefined;
 
@@ -61,7 +61,7 @@ export default function ScrollHero({ children }) {
       const p = distance > 0 ? Math.min(1, Math.max(0, -rect.top / distance)) : 0;
 
       // Written straight to the DOM, NOT through state. Calling setState on every
-      // scroll event re-renders, which tears down and re-creates this effect —
+      // scroll event re-renders, which tears down and re-creates this effect -
       // removing the scroll listener mid-scroll and making scrubbing stutter.
       if (barRef.current) barRef.current.style.width = `${(p * 100).toFixed(2)}%`;
 
@@ -132,7 +132,7 @@ export default function ScrollHero({ children }) {
       >
         <div className="absolute inset-0 bg-ground" role="img" aria-label={DESCRIPTION}>
           {/* The poster is ALWAYS rendered as the base layer, so the stage is
-              never empty — while frames load, if decoding fails, under reduced
+              never empty - while frames load, if decoding fails, under reduced
               motion, or on a slow link. The canvas draws opaque frames on top. */}
           {status !== 'failed' && (
             <img
@@ -143,7 +143,7 @@ export default function ScrollHero({ children }) {
             />
           )}
           {scrubbing && <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />}
-          {/* Legibility scrim — the frames are pale, the copy sits on top */}
+          {/* Legibility scrim - the frames are pale, the copy sits on top */}
           <div className="hero-scrim pointer-events-none absolute inset-0" />
         </div>
 

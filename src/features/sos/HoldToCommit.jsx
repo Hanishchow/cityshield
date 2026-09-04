@@ -11,7 +11,7 @@ const HOLD_MS = 2000;
  *  - onPressStart fires on press-DOWN, so location acquisition gets a 2-second
  *    head start before the incident exists.
  *
- * Keyboard: Space/Enter held has the same effect — the emergency path must be
+ * Keyboard: Space/Enter held has the same effect - the emergency path must be
  * fully operable without a pointer.
  */
 export default function HoldToCommit({ onPressStart, onPressEnd, onCommit, disabled }) {

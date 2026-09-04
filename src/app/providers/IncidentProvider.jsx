@@ -23,7 +23,7 @@ function reducer(state, action) {
         ? {
             ...state.incident,
             currentLocation: ping,
-            // Bounded track — this is a client prototype, not a telemetry store
+            // Bounded track - this is a client prototype, not a telemetry store
             locationTrack: [...state.incident.locationTrack, ping].slice(-120),
           }
         : null;
@@ -113,7 +113,7 @@ export function IncidentProvider({ children }) {
     unwatchRef.current = null;
   }, []);
 
-  // Location streams only while an incident is active. PRD §14 — the core
+  // Location streams only while an incident is active. PRD §14 - the core
   // privacy promise. Stop the moment the incident reaches a terminal state.
   useEffect(() => {
     if (state.incident && isTerminal(state.incident.state)) stopLocating();
@@ -135,7 +135,7 @@ export function IncidentProvider({ children }) {
     dispatchAction({ type: 'reset' });
   }, [stopLocating]);
 
-  /** Notify agencies via the dispatch adapter (mocked — Tier 2, PRD §11). */
+  /** Notify agencies via the dispatch adapter (mocked - Tier 2, PRD §11). */
   const notifyAgencies = useCallback(async () => {
     dispatchAction({ type: 'attach' });
     await dispatch.notifyAgencies([]);

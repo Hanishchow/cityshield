@@ -26,7 +26,9 @@ writeFileSync(join(DIST, '.nojekyll'), '');
  * serving 404.html with a 404 status. Dynamic routes (/track/:id) can't be
  * enumerated and still rely on the 404.html fallback, which works in a browser.
  */
-const STATIC_ROUTES = ['sos', 'services', 'report', 'about'];
+const STATIC_ROUTES = ['sos', 'report'];
+/* /track/:id and /live/:id are dynamic and cannot be enumerated; they fall back
+   to 404.html, which boots the app and routes correctly. */
 for (const route of STATIC_ROUTES) {
   mkdirSync(join(DIST, route), { recursive: true });
   copyFileSync(join(DIST, 'index.html'), join(DIST, route, 'index.html'));

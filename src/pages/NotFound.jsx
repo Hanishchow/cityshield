@@ -16,7 +16,7 @@ export default function NotFound() {
           Emergency SOS
         </Button>
         <Button to="/" variant="ghost" size="lg">
-          Back to overview
+          Back to home
         </Button>
       </div>
     </div>

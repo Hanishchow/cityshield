@@ -21,6 +21,7 @@ export const config = {
 /** Which adapters are live vs mocked — surfaced in the UI so nothing pretends. */
 export const adapterStatus = {
   geolocation: geolocation.name,
+  maps: config.maps ? 'live' : 'mock',
   geocode: config.maps ? 'live' : 'mock',
   facilities: config.places ? 'live' : 'mock',
   dispatch: 'mock', // Tier 2 — requires a government MoU (PRD §11)
@@ -36,18 +37,56 @@ export const isFullyMocked = Object.values(adapterStatus).every(
 /* ------------------------------------------------------------------ */
 
 export const geocode = {
-  /** Reverse-geocode a ping to a human-readable place + BBMP ward. */
-  async reverse(_pos) {
-    if (!config.maps) {
+  /**
+   * Reverse-geocode a ping to a human-readable place.
+   *
+   * The street, locality and postcode come from a real provider. The BBMP ward
+   * does NOT: ward boundaries are not in OpenStreetMap data, so that field
+   * stays mocked and is flagged as such even when the rest is live. Half-real
+   * data has to say which half.
+   */
+  async reverse(pos) {
+    if (!config.maps || !pos) {
       await delay(400);
       return {
         formatted: 'Near 100 Feet Road, Indiranagar, Bengaluru 560038',
+        street: '100 Feet Road',
+        locality: 'Indiranagar',
+        postcode: '560038',
         ward: MOCK_WARD,
+        wardMocked: true,
         mocked: true,
       };
     }
-    // Live implementation lands here once a maps key is configured.
-    throw new Error('Live geocode adapter not yet implemented');
+
+    const url =
+      `https://api.maptiler.com/geocoding/${pos.lng.toFixed(6)},${pos.lat.toFixed(6)}.json` +
+      `?key=${config.maps}&limit=1`;
+
+    const res = await fetch(url);
+    if (!res.ok) {
+      // A failed lookup must not take the location display down with it.
+      throw new Error(`Geocode failed: ${res.status}`);
+    }
+    const body = await res.json();
+    const feature = body.features?.[0];
+    if (!feature) {
+      throw new Error('Geocode returned no match');
+    }
+
+    const context = feature.context ?? [];
+    const pick = (kind) => context.find((c) => c.id?.startsWith(kind))?.text;
+
+    return {
+      formatted: feature.place_name,
+      street: feature.text,
+      locality: pick('place') ?? pick('municipality'),
+      postcode: pick('postal_code'),
+      /* Ward is still stand-in data even on the live path. */
+      ward: MOCK_WARD,
+      wardMocked: true,
+      mocked: false,
+    };
   },
 };
 

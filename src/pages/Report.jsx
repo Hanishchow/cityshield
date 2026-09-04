@@ -1,16 +1,20 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Card, { CardLabel } from '../components/ui/Card.jsx';
 import Button from '../components/ui/Button.jsx';
+import StatusPill from '../components/ui/StatusPill.jsx';
+import Panel from '../components/ui/Panel.jsx';
+import Section from '../components/layout/Section.jsx';
 import MockNotice from '../components/ui/MockNotice.jsx';
 import { CIVIC_CATEGORIES } from '../lib/incident/routing.js';
 import { MOCK_WARD } from '../lib/services/mockData.js';
 import { makeId } from '../lib/incident/model.js';
 
 /**
- * Civic reporting. Deliberately a DIFFERENT flow from SOS (PRD §9.5): calmer,
- * slower, no siren language, no hold-to-commit. Civic reports are a queue,
- * not a dispatch, and must never share an alerting path with emergencies.
+ * Civic reporting.
+ *
+ * Deliberately a different flow from SOS: calmer, slower, no hold-to-commit,
+ * no siren language, no urgency colour. A civic queue and an emergency
+ * dispatch must not feel like the same act.
  */
 export default function Report() {
   const [category, setCategory] = useState(CIVIC_CATEGORIES[0].id);
@@ -24,107 +28,106 @@ export default function Report() {
 
   if (reference) {
     return (
-      <div className="mx-auto max-w-2xl px-5 py-20 md:px-8">
-        <p className="text-label font-semibold uppercase tracking-wide text-ok">Submitted</p>
-        <h1 className="mt-3 text-h1 text-ink">Report submitted</h1>
-        <p className="mt-3 text-body text-ink-2">
+      <Section className="pt-6"><Panel read className="p-6 md:p-10">
+        <StatusPill tone="ok">Submitted</StatusPill>
+        <h1 className="mt-4 text-h1 text-ink">Report submitted</h1>
+        <p className="mt-3 max-w-prose text-lead text-ink-2">
           Keep this reference to follow up with the ward office.
         </p>
-        <p className="mt-4 rounded-md border border-line bg-sunken px-4 py-3 font-mono text-small tabular-nums text-ink">
+        <p className="mt-6 rounded-md border border-line bg-sunken px-5 py-4 font-data text-body text-ink">
           {reference}
         </p>
         <MockNotice className="mt-6">
-          Simulated. Submitting to BBMP Sahaaya requires a backend integration that is
-          not built yet — nothing was actually filed.
+          Simulated. Submitting to BBMP Sahaaya needs a backend integration that is not built
+          yet - nothing was actually filed.
         </MockNotice>
         <Button className="mt-8" variant="outline" onClick={() => setReference(null)}>
           Report something else
         </Button>
-      </div>
+      </Panel></Section>
     );
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-5 py-14 md:px-8">
-      <CardLabel>Civic report</CardLabel>
-      <h1 className="mt-3 text-h1 text-ink">Report a civic issue</h1>
-      <p className="mt-3 text-body text-ink-2">
-        Roads, water, garbage, streetlights and drainage. This is not an emergency
-        channel — if someone is at risk, use{' '}
-        <Link to="/sos" className="font-semibold">
-          Emergency SOS
-        </Link>{' '}
-        or call 112.
-      </p>
-
-      <form onSubmit={submit} className="mt-8 space-y-6">
-        <fieldset>
-          <legend className="text-small font-semibold text-ink">What is the issue?</legend>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
-            {CIVIC_CATEGORIES.map((c) => (
-              <label
-                key={c.id}
-                className={`flex cursor-pointer items-start gap-3 rounded-md border p-3.5 transition-colors duration-state ${
-                  category === c.id
-                    ? 'border-civic bg-civic-tint'
-                    : 'border-line bg-surface hover:bg-sunken'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="category"
-                  value={c.id}
-                  checked={category === c.id}
-                  onChange={() => setCategory(c.id)}
-                  className="mt-1 accent-[var(--civic)]"
-                />
-                <span>
-                  <span className="block text-small font-medium text-ink">{c.label}</span>
-                  <span className="block text-small text-ink-2">{c.blurb}</span>
-                </span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-
-        <div>
-          <label htmlFor="details" className="text-small font-semibold text-ink">
-            Details <span className="font-normal text-ink-3">(optional)</span>
-          </label>
-          <textarea
-            id="details"
-            rows={4}
-            value={details}
-            onChange={(e) => setDetails(e.target.value)}
-            placeholder="Where exactly, and how long has it been like this?"
-            className="mt-2 w-full rounded-md border border-line-strong bg-surface px-3.5 py-2.5 text-small text-ink placeholder:text-ink-3"
-          />
-        </div>
-
-        <Card className="flex items-center justify-between gap-4 p-4">
-          <div>
-            <div className="text-small font-medium text-ink">Add a photo</div>
-            <div className="text-small text-ink-2">Helps the ward engineer prioritise.</div>
-          </div>
-          <Button type="button" variant="quiet" size="sm">
-            Attach
-          </Button>
-        </Card>
-
-        <Card className="p-4">
-          <CardLabel>Detected ward</CardLabel>
-          <p className="mt-1.5 text-small text-ink">
-            Ward {MOCK_WARD.number} — {MOCK_WARD.name}, {MOCK_WARD.zone} zone
+    <Section className="pt-6">
+      <div className="grid gap-5 lg:grid-cols-12">
+        <Panel read className="p-6 md:p-9 lg:col-span-5">
+          <h1 className="text-h1 font-extrabold leading-[1.03] tracking-[-0.03em] text-ink">
+            Report a civic issue.
+          </h1>
+          <p className="mt-4 max-w-prose text-lead text-ink-2">
+            Roads, water, garbage, streetlights and drainage. This is a queue, not a
+            dispatch - it never shares an alerting path with emergencies.
           </p>
-          <p className="mt-1 text-small text-ink-3">
-            Derived from your location. You can correct it before submitting.
+          <p className="mt-4 max-w-prose text-body text-ink-2">
+            If someone is at risk, use{' '}
+            <Link to="/sos" className="font-semibold">
+              Emergency SOS
+            </Link>{' '}
+            or call 112 instead.
           </p>
-        </Card>
 
-        <Button type="submit" variant="civic" size="lg" full>
-          Submit report
-        </Button>
-      </form>
-    </div>
+          <div className="mt-8 rounded-md border border-line/70 bg-ink/[0.035] p-5">
+            <span className="label-caps">Detected ward</span>
+            <p className="mt-2 text-body text-ink">
+              Ward {MOCK_WARD.number} - {MOCK_WARD.name}
+            </p>
+            <p className="mt-1 text-small text-ink-3">
+              {MOCK_WARD.zone} zone. Derived from your location; correct it before submitting
+              if it is wrong.
+            </p>
+          </div>
+        </Panel>
+
+        <Panel read as="form" onSubmit={submit} className="p-6 md:p-9 lg:col-span-7">
+          <fieldset className="border-0 p-0">
+            <legend className="text-h3 text-ink">What is the issue?</legend>
+            <ul className="mt-5 divide-y divide-line border-y border-line">
+              {CIVIC_CATEGORIES.map((c) => (
+                <li key={c.id}>
+                  <label className="flex cursor-pointer items-start gap-4 py-4 transition-colors duration-state hover:bg-sunken">
+                    <input
+                      type="radio"
+                      name="category"
+                      value={c.id}
+                      checked={category === c.id}
+                      onChange={() => setCategory(c.id)}
+                      className="mt-1.5 h-4 w-4 shrink-0 accent-[var(--accent)]"
+                    />
+                    <span>
+                      <span className="block text-body font-medium text-ink">{c.label}</span>
+                      <span className="block text-small text-ink-2">{c.blurb}</span>
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </fieldset>
+
+          <div className="mt-8">
+            <label htmlFor="details" className="text-small font-semibold text-ink">
+              Details <span className="font-normal text-ink-3">(optional)</span>
+            </label>
+            <textarea
+              id="details"
+              rows={5}
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
+              placeholder="Where exactly, and how long has it been like this?"
+              className="mt-2 w-full rounded-md border border-line-strong bg-surface px-4 py-3 text-body text-ink placeholder:text-ink-3"
+            />
+          </div>
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Button type="submit" variant="frame" size="lg">
+              Submit report
+            </Button>
+            <span className="text-small text-ink-3">
+              You will get a reference to follow up with.
+            </span>
+          </div>
+        </Panel>
+      </div>
+    </Section>
   );
 }
