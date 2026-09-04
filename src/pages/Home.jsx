@@ -20,11 +20,14 @@ const HELPLINES = [
   { n: '1533', service: 'BBMP civic', note: 'Non-emergency' },
 ];
 
+/* No "01 / 02 / 03" labels: this renders as an ordered list, so the sequence is
+   already carried semantically and read out that way by a screen reader. A
+   printed number on top of that is decoration. */
 const STEPS = [
-  { n: '01', t: 'Report once', d: 'One hold, or one category. You never choose a department.' },
-  { n: '02', t: 'Location is sensed', d: 'Continuous GPS with its accuracy shown, not a described address.' },
-  { n: '03', t: 'Agencies attach', d: 'Ambulance, police and civic join one record and can see each other.' },
-  { n: '04', t: 'You watch it', d: 'Every status shown is backed by a real event. Nothing is invented.' },
+  { t: 'Report once', d: 'One hold, or one category. You never choose a department.' },
+  { t: 'Location is sensed', d: 'Continuous GPS with its accuracy shown, not a described address.' },
+  { t: 'Agencies attach', d: 'Ambulance, police and civic join one record and can see each other.' },
+  { t: 'You watch it', d: 'Every status shown is backed by a real event. Nothing is invented.' },
 ];
 
 const COMMITMENTS = [
@@ -38,7 +41,7 @@ const COMMITMENTS = [
   },
   {
     t: 'It degrades to a phone call',
-    d: 'No data, no GPS, no server — 112 stays one tap away on every screen, including every error state. The app must never be the only path to help.',
+    d: 'No data, no GPS, no server. 112 stays one tap away on every screen, including every error state. The app must never be the only path to help.',
   },
   {
     t: 'Location only during an emergency',
@@ -54,14 +57,18 @@ const COMPLIANCE = [
   ['Open routing table', 'neutral'],
 ];
 
-/** Section heading. A rule and a label, not another enclosing box. */
-function Head({ index, title, lead }) {
+/**
+ * Section heading.
+ *
+ * No numbered eyebrow above the title. Enumerating sections ("01 / See it
+ * work") is a templated tell that adds nothing a reader cannot already see:
+ * the section's position on the page is what orders it. The headline alone
+ * carries the meaning.
+ */
+function Head({ title, lead }) {
   return (
     <header className="mb-7">
-      <div className="flex items-baseline gap-3">
-        <span className="font-data text-micro text-ink-3">{index}</span>
-        <h2 className="text-h2 text-ink">{title}</h2>
-      </div>
+      <h2 className="text-h2 text-ink">{title}</h2>
       {lead && <p className="mt-3 max-w-prose text-small text-ink-2">{lead}</p>}
     </header>
   );
@@ -73,7 +80,7 @@ function Head({ index, title, lead }) {
  * Everything a first-time visitor needs is here in one scroll: what it is, what
  * it covers, how it works, and the control itself. The separate marketing routes
  * still exist for deep links, but nobody should have to navigate to understand
- * the product — in an emergency product, a nav bar is a failure mode.
+ * the product. In an emergency product, a nav bar is a failure mode.
  */
 export default function Home() {
   return (
@@ -136,7 +143,7 @@ export default function Home() {
       <Section className="py-8">
         <div className="grid gap-8 lg:grid-cols-12">
           <div className="lg:col-span-5">
-            <Head index="01" title="See it work" lead="Ninety seconds, start to finish: raising an incident, watching the agencies attach, and following a unit to your door." />
+            <Head title="See it work" lead="Ninety seconds, start to finish: raising an incident, watching the agencies attach, and following a unit to your door." />
             <p className="text-small text-ink-3">
               If you would rather read it, every step is written out below.
             </p>
@@ -151,9 +158,8 @@ export default function Home() {
       <Section className="py-8">
         <div className="border-t border-line pt-8">
           <Head
-            index="02"
             title="The number you need is the one you forget"
-            lead="Bengaluru runs at least eight public emergency numbers. Under stress, recalling the right one is the first thing that fails — and the wrong one costs a transfer."
+            lead="Bengaluru runs at least eight public emergency numbers. Under stress, recalling the right one is the first thing that fails, and the wrong one costs a transfer."
           />
           <DataTable
             columns={[
@@ -172,9 +178,8 @@ export default function Home() {
       <Section className="py-8">
         <div className="border-t border-line pt-8">
           <Head
-            index="03"
             title="What it covers"
-            lead="You pick what happened. The routing table decides who owns it and who else attaches — published here rather than hidden, because a citizen should be able to check where their report went."
+            lead="You pick what happened. The routing table decides who owns it and who else attaches. It is published here rather than hidden, because a citizen should be able to check where their report went."
           />
           <div className="grid gap-x-10 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
             {EMERGENCY_CATEGORIES.map((c) => (
@@ -193,12 +198,11 @@ export default function Home() {
       {/* How it works */}
       <Section className="py-8">
         <div className="border-t border-line pt-8">
-          <Head index="04" title="How it works" />
+          <Head title="How it works" />
           <ol className="grid list-none gap-x-10 gap-y-7 p-0 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s) => (
-              <li key={s.n} className="border-t border-line/70 pt-4">
-                <span className="font-data text-micro text-ink-3">{s.n}</span>
-                <h3 className="mt-2 text-body font-semibold text-ink">{s.t}</h3>
+              <li key={s.t} className="border-t border-line/70 pt-4">
+                <h3 className="text-body font-semibold text-ink">{s.t}</h3>
                 <p className="mt-1.5 text-small text-ink-2">{s.d}</p>
               </li>
             ))}
@@ -209,7 +213,7 @@ export default function Home() {
       {/* Commitments */}
       <Section className="py-8">
         <div className="border-t border-line pt-8">
-          <Head index="05" title="What we commit to" />
+          <Head title="What we commit to" />
           <div className="grid gap-x-12 gap-y-8 lg:grid-cols-2">
             {COMMITMENTS.map((c) => (
               <div key={c.t} className="surface-alert py-1 pl-5">

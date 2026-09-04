@@ -26,7 +26,7 @@ export default function Seo({
 
   /* The home page uses the bare site name. Everywhere else is suffixed, so every
      title in a search result is unique AND identifiable at a glance. */
-  const fullTitle = title ? `${title} — ${SITE_NAME}` : `${SITE_NAME} — one incident, every agency`;
+  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME}: one incident, every agency`;
 
   return (
     <>
@@ -56,7 +56,7 @@ export default function Seo({
       {/* Alt text on the share image too: it is an image, and it is read out. */}
       <meta
         name="twitter:image:alt"
-        content="City Shield — one emergency incident record shared by every responding agency in Bengaluru"
+        content="City Shield: one emergency incident record shared by every responding agency in Bengaluru"
       />
 
       {breadcrumbs && (

@@ -114,7 +114,7 @@ export const CATEGORIES = [
   {
     id: 'crime.report',
     label: 'Report a crime',
-    blurb: 'Theft, cybercrime, or missing person — not currently in progress.',
+    blurb: 'Theft, cybercrime, or missing person, not currently in progress.',
     primary: 'police',
     secondary: [],
     severity: 'urgent',
