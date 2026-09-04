@@ -7,6 +7,7 @@ import VideoSlot from '../components/ui/VideoSlot.jsx';
 import LocationGate from '../features/location/LocationGate.jsx';
 import { EMERGENCY_CATEGORIES } from '../lib/incident/routing.js';
 import { AGENCY_LABEL } from '../lib/incident/model.js';
+import Seo from '../components/seo/Seo.jsx';
 
 const HELPLINES = [
   { n: '112', service: 'All emergencies (ERSS)', note: 'National; awareness is low' },
@@ -77,6 +78,8 @@ function Head({ index, title, lead }) {
 export default function Home() {
   return (
     <>
+      <Seo description="Raise one emergency in Bengaluru and every responding agency - ambulance, police, fire, BBMP civic - attaches to the same record. No choosing which helpline to call." />
+
       {/* Hero */}
       <Section className="pb-4 pt-6">
         <div className="grid items-center gap-10 lg:grid-cols-12">

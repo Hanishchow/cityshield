@@ -10,6 +10,7 @@ import { useIncident } from '../app/providers/incidentContext.js';
 import { AGENCY_LABEL, AGENCY_TASK_LABEL, SEVERITY_LABEL } from '../lib/incident/model.js';
 import { STATES, PROGRESS_STATES, progressIndex } from '../lib/incident/machine.js';
 import { clockTime, elapsed } from '../lib/utils/format.js';
+import Seo from '../components/seo/Seo.jsx';
 
 /** Emergency path: opaque surfaces only, no glass, no entrance animation. */
 
@@ -81,7 +82,13 @@ export default function Track() {
   const current = progressIndex(incident.state);
 
   return (
-    <Section className="pt-6">
+    <>
+      <Seo
+        title="Incident record"
+        description="The full record for one incident: every agency attached to it, every state change, and the timestamps behind them."
+        noindex
+      />
+      <Section className="pt-6">
       <div aria-live="polite" className="sr-only">
         Incident status: {STATES[incident.state]?.label}
       </div>
@@ -218,5 +225,7 @@ export default function Track() {
         </div>
       </div>
     </Section>
+    </>
+
   );
 }

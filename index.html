@@ -9,18 +9,16 @@
          and tested. -->
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f6fa" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1b33" />
+    <!-- The page title and meta description are owned per route by the Seo
+         component, so every page gets its own. They are deliberately absent
+         here: duplicating them would emit two of each element, which is invalid,
+         and a crawler taking the first would read the same generic copy on every
+         page. -->
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/brand/icon-192.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="City Shield" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta
-      name="description"
-      content="City Shield connects Bengaluru citizens to emergency, medical, fire and civic services through one incident record that every responding agency shares."
-    />
-    <!-- Hero poster is the LCP element -->
-    <link rel="preload" as="image" href="/hero/poster.webp" fetchpriority="high" />
-    <title>City Shield — one incident, every agency</title>
     <script>
       /* Apply the stored palette/theme BEFORE first paint. Two reasons:
          1. No flash of the wrong theme on load.

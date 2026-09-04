@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTheme, PALETTES } from '../app/providers/themeContext.js';
 import { contrastRatio, tokenValue, verdict } from '../lib/utils/contrast.js';
+import Seo from '../components/seo/Seo.jsx';
 
 /* Pairs that carry meaning: [foreground, background, usage, kind] */
 const PAIRS = [
@@ -74,7 +75,9 @@ export default function Styleguide() {
   const activePalette = PALETTES.find((p) => p.id === palette);
 
   return (
-    <div className="mx-auto max-w-shell px-6 py-12 md:px-10">
+    <>
+      <Seo title="Design system" description="Tokens, surfaces and type scale for the City Shield interface." noindex />
+      <div className="mx-auto max-w-shell px-6 py-12 md:px-10">
       <p className="label-caps">Chunk 0 - design proof</p>
       <h1 className="mt-3 text-h1 text-ink">Instrument Glass</h1>
       <p className="mt-4 max-w-prose text-lead text-ink-2">
@@ -309,5 +312,6 @@ export default function Styleguide() {
         </div>
       </Section>
     </div>
+    </>
   );
 }

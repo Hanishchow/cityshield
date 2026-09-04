@@ -8,6 +8,8 @@ import MockNotice from '../components/ui/MockNotice.jsx';
 import { CIVIC_CATEGORIES } from '../lib/incident/routing.js';
 import { MOCK_WARD } from '../lib/services/mockData.js';
 import { makeId } from '../lib/incident/model.js';
+import Seo from '../components/seo/Seo.jsx';
+import Breadcrumbs from '../components/seo/Breadcrumbs.jsx';
 
 /**
  * Civic reporting.
@@ -16,6 +18,11 @@ import { makeId } from '../lib/incident/model.js';
  * no siren language, no urgency colour. A civic queue and an emergency
  * dispatch must not feel like the same act.
  */
+const CRUMBS = [
+  { name: 'Home', path: '/' },
+  { name: 'Report an issue', path: '/report' },
+];
+
 export default function Report() {
   const [category, setCategory] = useState(CIVIC_CATEGORIES[0].id);
   const [details, setDetails] = useState('');
@@ -49,7 +56,14 @@ export default function Report() {
   }
 
   return (
-    <Section className="pt-6">
+    <>
+      <Seo
+        title="Report an issue"
+        description="Report a civic or non-life-threatening issue in Bengaluru - roads, water, drainage, debris - into the same shared record the emergency services use."
+        breadcrumbs={CRUMBS}
+      />
+      <Section className="pt-6">
+        <Breadcrumbs trail={CRUMBS} />
       <div className="grid gap-5 lg:grid-cols-12">
         <Panel read className="p-6 md:p-9 lg:col-span-5">
           <h1 className="text-h1 font-extrabold leading-[1.03] tracking-[-0.03em] text-ink">
@@ -129,5 +143,7 @@ export default function Report() {
         </Panel>
       </div>
     </Section>
+    </>
+
   );
 }

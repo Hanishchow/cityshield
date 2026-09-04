@@ -12,6 +12,7 @@ import Home from '../pages/Home.jsx';
 import Sos from '../pages/Sos.jsx';
 import Track from '../pages/Track.jsx';
 import Live from '../pages/Live.jsx';
+import { organizationSchema, websiteSchema } from '../lib/seo.js';
 
 const Report = lazy(() => import('../pages/Report.jsx'));
 const NotFound = lazy(() => import('../pages/NotFound.jsx'));
@@ -41,6 +42,13 @@ export default function App() {
         <Link className="skip-link" to="/sos">
           Go straight to Emergency SOS
         </Link>
+
+        {/* Site-wide structured data. Rendered once at the app root rather
+            than per page, because the Organization and WebSite nodes describe
+            the site itself and repeating them on every route would emit
+            conflicting duplicates of the same @id. */}
+        <script type="application/ld+json">{JSON.stringify(organizationSchema())}</script>
+        <script type="application/ld+json">{JSON.stringify(websiteSchema())}</script>
 
         <Header />
 

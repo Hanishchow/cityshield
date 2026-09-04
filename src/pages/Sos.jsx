@@ -10,6 +10,8 @@ import MockNotice from '../components/ui/MockNotice.jsx';
 import { useIncident } from '../app/providers/incidentContext.js';
 import { EMERGENCY_CATEGORIES } from '../lib/incident/routing.js';
 import { AGENCY_LABEL } from '../lib/incident/model.js';
+import Seo from '../components/seo/Seo.jsx';
+import Breadcrumbs from '../components/seo/Breadcrumbs.jsx';
 
 /**
  * The emergency path.
@@ -21,6 +23,11 @@ import { AGENCY_LABEL } from '../lib/incident/model.js';
  */
 
 const AUTO_ROUTE_MS = 10000;
+
+const CRUMBS = [
+  { name: 'Home', path: '/' },
+  { name: 'Emergency SOS', path: '/sos' },
+];
 
 export default function Sos() {
   const navigate = useNavigate();
@@ -165,7 +172,14 @@ export default function Sos() {
 
   /* ---------- idle ---------- */
   return (
-    <Section className="pt-6">
+    <>
+      <Seo
+        title="Emergency SOS"
+        description="Hold to raise an emergency immediately. Your location and its accuracy are sent to the agencies that need it, and 112 stays one tap away."
+        breadcrumbs={CRUMBS}
+      />
+      <Section className="pt-6">
+        <Breadcrumbs trail={CRUMBS} />
       <div className="grid items-center gap-5 lg:grid-cols-12">
         <Panel read className="p-6 md:p-9 lg:col-span-5">
           <StatusPill tone="signal">Emergency</StatusPill>
@@ -201,5 +215,7 @@ export default function Sos() {
         </div>
       </div>
     </Section>
+    </>
+
   );
 }

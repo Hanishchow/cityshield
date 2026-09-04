@@ -8,6 +8,7 @@ import MockNotice from '../components/ui/MockNotice.jsx';
 import LiveMap from '../features/track/LiveMap.jsx';
 import useResponderSim, { formatEta } from '../features/track/useResponderSim.js';
 import { AGENCY_TASK_LABEL } from '../lib/incident/model.js';
+import Seo from '../components/seo/Seo.jsx';
 
 const STATE_TONE = { accepted: 'accent', en_route: 'warn', on_scene: 'ok' };
 
@@ -35,7 +36,13 @@ export default function Live() {
   const allArrived = units.every((u) => u.arrived);
 
   return (
-    <Section className="pt-6">
+    <>
+      <Seo
+        title="Live tracking"
+        description="Watch responding units converge on your incident in real time."
+        noindex
+      />
+      <Section className="pt-6">
       {/* Status is announced politely: a screen reader user must not be
           interrupted every second by a ticking countdown. */}
       <div aria-live="polite" className="sr-only">
@@ -140,5 +147,7 @@ export default function Live() {
         </Link>
       </p>
     </Section>
+    </>
+
   );
 }

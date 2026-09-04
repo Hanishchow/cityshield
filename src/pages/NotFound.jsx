@@ -1,8 +1,15 @@
 import Button from '../components/ui/Button.jsx';
+import Seo from '../components/seo/Seo.jsx';
 
 export default function NotFound() {
   return (
-    <div className="mx-auto max-w-2xl px-5 py-24 text-center md:px-8">
+    <>
+      <Seo
+        title="Page not found"
+        description="That page does not exist. If you need help now, call 112 or open Emergency SOS."
+        noindex
+      />
+      <div className="mx-auto max-w-2xl px-5 py-24 text-center md:px-8">
       <p className="text-label font-semibold uppercase tracking-wide text-ink-3">404</p>
       <h1 className="mt-3 text-h1 text-ink">That page doesn&apos;t exist</h1>
       <p className="mt-3 text-body text-ink-2">
@@ -20,5 +27,7 @@ export default function NotFound() {
         </Button>
       </div>
     </div>
+    </>
+
   );
 }

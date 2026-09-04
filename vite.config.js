@@ -15,4 +15,10 @@ export default defineConfig(({ command }) => ({
   base: process.env.BASE_PATH ?? (command === 'build' ? '/city-shield/' : '/'),
   plugins: [react()],
   server: { port: 5178 },
+  build: {
+    /* Explicit, not left to the default. Production source maps hand anyone who
+       opens devtools the original sources; that is a decision worth stating in
+       the config rather than inheriting silently. */
+    sourcemap: false,
+  },
 }));
