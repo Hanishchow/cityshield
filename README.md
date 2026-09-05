@@ -1,142 +1,61 @@
 # City Shield
 
-**Live: https://hanishchow.github.io/city-shield/**
+One emergency incident record that every responding agency in Bengaluru attaches
+to, instead of knowing which of eight public helplines to call.
 
-A citizen emergency platform for Bengaluru. One tap plus continuous GPS replaces
-six helplines — and every responding government agency shares **one incident
-record** instead of receiving six disconnected phone calls.
+**Live:** https://hanishchow.github.io/cityshield/
 
-> Prototype on mock data. No emergency service is contacted. Call 112 for real emergencies.
+> **Prototype.** This does not dispatch real emergency services. Real dispatch
+> needs an ERSS-112 integration that requires a government agreement. Responder
+> positions in live tracking are simulated and labelled as such in the
+> interface. **In a real emergency in India, call 112.**
 
-- [`docs/PRD.md`](docs/PRD.md) — product requirements, incident model, integration tiers
-- [`docs/FRONTEND-SPEC.md`](docs/FRONTEND-SPEC.md) — design system, architecture, hero technique
-- [`docs/CHECKLIST.md`](docs/CHECKLIST.md) — build checklist and open decisions
+## What it does
 
-## Run it
+- **One action raises an incident.** The citizen never picks a department. A
+  server-side routing policy assigns a primary agency and attaches secondaries.
+- **Location carries its uncertainty.** Accuracy radius and fix source are always
+  shown, never a falsely precise pin.
+- **Every agency shares one record** and can see the others on it.
+- **Live tracking** shows units converging on a real map.
+- **It degrades to a phone call.** No data, no GPS, no server: 112 stays one tap
+  away on every screen, including every error state.
 
-```bash
-npm install
-npm run dev
+## Layout
+
+```
+.            React 19 + Vite 8 + Tailwind 3. Installable PWA.
+api/         Node 24 + Fastify 5 + Zod. TypeScript, no build step.
 ```
 
-Dev server: http://localhost:5178
+## Running it
 
-**The app runs fully with zero environment variables.** Every external service
-falls back to a mock adapter with realistic Bengaluru data, simulated GPS accuracy
-drift, and injectable failure. Nothing is blocked on keys.
-
-| Script | What it does |
-|---|---|
-| `npm run dev` | Dev server |
-| `npm run build` | Production build |
-| `npm run lint` | oxlint |
-| `npm test` | Incident state machine + routing tests (17) |
-| `npm run hero:build` | Regenerate the hero frame sequence |
-| `npm run check:keys` | Validate configured API keys with one real call each |
-| `npm run deploy` | Build and publish to GitHub Pages |
-
-## Deployment
-
-Published to GitHub Pages from the `gh-pages` branch:
+Both halves run with **zero environment variables**. Absent credentials degrade
+a capability to a clearly-labelled stand-in; they never stop the app booting.
 
 ```bash
-npm run deploy
+npm install && npm run dev          # app on http://localhost:5178
+cd api && npm install && npm run dev # api on http://localhost:8787
 ```
 
-The site is served from a sub-path (`/city-shield/`), so `vite.config.js` sets
-`base` and the router takes `basename={import.meta.env.BASE_URL}`. The hero
-manifest stores **base-relative** paths for the same reason. To host at a domain
-root instead:
-
-```bash
-BASE_PATH=/ npm run build
-```
-
-`scripts/postbuild.mjs` writes `.nojekyll`, a `404.html` fallback, and a real
-directory index for each static route — so `/sos`, `/services`, `/report` and
-`/about` return a genuine **200** rather than Pages' 404-with-a-body. Dynamic
-routes (`/track/:id`) still fall back to `404.html`: the page loads and routes
-correctly, but the HTTP status is 404, which is unavoidable on static hosting.
+Tests: `npm test` (app) and `npm test` in `api/`.
 
 ## Configuration
 
-Copy `.env.example` to `.env.local`. Both keys are optional.
+Copy `api/.env.example` to `api/.env` and fill in what you have.
 
-> Every `VITE_*` variable is inlined into the client bundle as **plain text**.
-> Only browser-safe, referrer-restricted keys belong there — never an SMS,
-> payment, or admin key. Those require a backend, which is why guardian SMS
-> stays mocked in this build.
+| Variable | Effect when absent |
+|---|---|
+| `MAPPLS_CLIENT_ID` / `_SECRET` | falls back to Ola, then a labelled stand-in |
+| `OLA_MAPS_API_KEY` | same chain, one step down |
+| `DATABASE_URL` | in-memory store instead of Postgres + PostGIS |
+| `VITE_MAPS_API_KEY` | map renders as a schematic grid |
 
-Check whatever you configured:
+Map provider credentials live on the **server**. Every `VITE_*` variable is
+inlined into the browser bundle in plaintext, so anything secret must not be one.
 
-```bash
-npm run check:keys
-```
+## Design notes
 
-Unconfigured keys report `SKIPPED` and exit 0. A failing key is reported, never
-silently fallen back from.
-
-## The hero
-
-The homepage hero is a 120-frame image sequence scrubbed by scroll position —
-the Apple product-page technique. Frames are generated procedurally and
-deterministically by `scripts/hero/generate-frames.mjs`, then encoded to WebP.
-
-```bash
-npm run hero:build
-```
-
-Requires `ffmpeg` on PATH. Output is ~2.9 MB desktop and ~1.2 MB mobile;
-intermediate PNGs are deleted after encoding.
-
-It falls back to a static poster under `prefers-reduced-motion`, Save-Data, slow
-connections, and decode failure. Deleting `public/hero/` entirely leaves the page
-functional.
-
-### Swapping in real footage
-
-The component reads `public/hero/frames.json`, so replacing the procedural
-sequence with rendered video (e.g. from Google Flow) needs **no component changes**:
-
-```bash
-ffmpeg -i flow-hero.mp4 -vf "fps=24,scale=1600:900" -q:v 75 -start_number 0 public/hero/frames/desktop/f%04d.webp
-```
-
-Then update `frameCount` and `source` in `public/hero/frames.json`.
-
-## Architecture
-
-```
-src/
-├── app/            router, providers (IncidentProvider)
-├── pages/          Home, Sos, Track, Services, Report, About, NotFound
-├── components/     layout/, ui/, hero/   — presentational, no data access
-├── features/       sos/, location/       — domain components
-├── lib/
-│   ├── incident/   model, state machine, agency routing table
-│   ├── services/   adapter layer (mock + real, selected by env)
-│   └── utils/
-└── styles/         tokens.css, base.css
-```
-
-Design tokens are CSS custom properties surfaced through Tailwind, so components
-use `bg-surface text-ink border-line` — **no component references a raw hex**.
-
-## Invariants
-
-These hold everywhere and are worth preserving:
-
-1. **No fabricated state.** Every status shown is backed by a real event. Anything
-   derived from a mock is labelled as simulated.
-2. **`tel:112` is always one tap away**, including on every error screen.
-3. **No raw hex** in any component.
-4. **No key value** in source, logs, or git history.
-5. **The emergency path is never lazy-loaded** and never waits on the hero.
-6. **Colour is never the sole carrier of meaning.**
-7. **The app runs with zero env vars set.**
-
-## Status
-
-Prototype. Direct dispatch to police, ambulance or fire requires a government
-integration that does not exist — see `docs/PRD.md` §11 for the honest tier
-breakdown. In a real emergency, call 112.
+`api/ARCHITECTURE.md` covers the state machine, the tamper-evident audit chain,
+capability tokens, retention under the DPDP Act, and what is deliberately still
+mocked.

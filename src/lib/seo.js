@@ -9,7 +9,7 @@
  * Override with VITE_SITE_URL when a custom domain is connected.
  */
 export const SITE_URL = (
-  import.meta.env.VITE_SITE_URL || 'https://hanishchow.github.io/city-shield'
+  import.meta.env.VITE_SITE_URL || 'https://hanishchow.github.io/cityshield'
 ).replace(/\/+$/, '');
 
 export const SITE_NAME = 'City Shield';

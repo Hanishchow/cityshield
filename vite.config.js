@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// GitHub Pages serves this project from https://<user>.github.io/city-shield/,
+// GitHub Pages serves this project from https://<user>.github.io/cityshield/,
 // so the BUILD is emitted under that sub-path. `base` feeds import.meta.env
 // .BASE_URL, which the router (basename) and the hero manifest both consume.
 //
@@ -12,7 +12,7 @@ import react from '@vitejs/plugin-react';
 //
 // Override either with BASE_PATH, e.g. BASE_PATH=/ for root-domain hosting.
 export default defineConfig(({ command }) => ({
-  base: process.env.BASE_PATH ?? (command === 'build' ? '/city-shield/' : '/'),
+  base: process.env.BASE_PATH ?? (command === 'build' ? '/cityshield/' : '/'),
   plugins: [react()],
   server: { port: 5178 },
   build: {

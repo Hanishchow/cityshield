@@ -30,3 +30,9 @@ scripts/hero/.tmp
 *.njsproj
 *.sln
 *.sw?
+
+# Backend subtree
+api/node_modules/
+api/.env
+api/.env.local
+api/*.log

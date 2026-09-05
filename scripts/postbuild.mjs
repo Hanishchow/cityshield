@@ -50,7 +50,7 @@ const size = (dir) =>
  * longer serves is worse than no sitemap at all.
  * ------------------------------------------------------------------ */
 
-const SITE_URL = (process.env.VITE_SITE_URL || 'https://hanishchow.github.io/city-shield').replace(
+const SITE_URL = (process.env.VITE_SITE_URL || 'https://hanishchow.github.io/cityshield').replace(
   /\/+$/,
   '',
 );
