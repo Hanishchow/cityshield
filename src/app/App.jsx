@@ -20,6 +20,17 @@ const Report = lazy(() => import('../pages/Report.jsx'));
 const NotFound = lazy(() => import('../pages/NotFound.jsx'));
 const Styleguide = lazy(() => import('../pages/Styleguide.jsx'));
 
+/**
+ * Resets the route boundary on navigation.
+ *
+ * Needs its own component because useLocation() only works inside the Router,
+ * and App is the component that renders the Router.
+ */
+function Routed({ children }) {
+  const { pathname } = useLocation();
+  return <RouteBoundary key={pathname}>{children}</RouteBoundary>;
+}
+
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => window.scrollTo(0, 0), [pathname]);
@@ -64,7 +75,7 @@ export default function App() {
           {/* Keyed on the path so React remounts the boundary on navigation:
               a route that failed recovers as soon as the person goes elsewhere,
               rather than staying broken for the rest of the session. */}
-          <RouteBoundary key={pathname}>
+          <Routed>
             <Suspense fallback={<div className="px-5 py-24 text-center text-small text-ink-3">Loading…</div>}>
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -76,7 +87,7 @@ export default function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
-          </RouteBoundary>
+          </Routed>
         </main>
 
         <Footer />
