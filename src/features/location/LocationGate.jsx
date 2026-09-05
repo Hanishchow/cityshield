@@ -32,7 +32,7 @@ export default function LocationGate({ onSettled }) {
   const unsupported = state === PERMISSION.unsupported;
 
   return (
-    <section className="surface surface-alert px-5 py-4" aria-labelledby="loc-gate-h">
+    <section className="glass surface-alert px-5 py-4" aria-labelledby="loc-gate-h">
       <h2 id="loc-gate-h" className="text-body font-semibold text-ink">
         {denied
           ? 'Location is blocked for this site'

@@ -80,7 +80,7 @@ export default function Sos() {
   if (incident?.state === 'cancelled') {
     return (
       <Section className="pt-6">
-        <Panel read className="p-6 md:p-10">
+        <Panel read className="surface-solid p-6 md:p-10">
         <StatusPill tone="neutral">Cancelled</StatusPill>
         <h1 className="mt-4 text-h1 text-ink">Emergency cancelled</h1>
         <p className="mt-3 max-w-prose text-lead text-ink-2">
@@ -109,7 +109,7 @@ export default function Sos() {
         </div>
 
         <div className="grid gap-5 lg:grid-cols-12">
-          <Panel read className="p-6 md:p-8 lg:col-span-8">
+          <Panel read className="surface-solid p-6 md:p-8 lg:col-span-8">
             <div className="flex flex-wrap items-center gap-3">
               <StatusPill tone="signal">Report open</StatusPill>
               <span className="font-data text-small text-ink-3">{incident.id}</span>
@@ -160,7 +160,7 @@ export default function Sos() {
 
           {/* Sticky action rail - 112 never scrolls away mid-emergency */}
           <aside className="lg:col-span-4">
-            <Panel read className="p-5 lg:sticky lg:top-24">
+            <Panel read className="surface-solid p-5 lg:sticky lg:top-24">
               <LocationBanner ping={lastPing} locating={locating} error={locationError} />
               <div className="mt-4 space-y-2">
                 <Button href="tel:112" variant="signal" size="lg" full>
@@ -191,7 +191,7 @@ export default function Sos() {
       <Section className="pt-6">
         <Breadcrumbs trail={CRUMBS} />
       <div className="grid items-center gap-5 lg:grid-cols-12">
-        <Panel read className="p-6 md:p-9 lg:col-span-5">
+        <Panel read className="surface-solid p-6 md:p-9 lg:col-span-5">
           <StatusPill tone="signal">Emergency</StatusPill>
           <h1 className="mt-4 text-h1 leading-[1.06] text-ink">Hold to send an alert.</h1>
           <p className="mt-4 max-w-prose text-lead text-ink-2">
@@ -211,7 +211,7 @@ export default function Sos() {
         </Panel>
 
         <div className="lg:col-span-7">
-          <Panel read className="p-8 md:p-12">
+          <Panel read className="surface-solid p-8 md:p-12">
             <HoldToCommit
               onPressStart={startLocating}
               onPressEnd={() => {}}

@@ -439,62 +439,130 @@
     border-top: 0;
   }
 
+  /* ------------------------------------------------------------------ *
+   * Glass
+   *
+   * An honest approximation, not Apple's Liquid Glass. Apple documents that
+   * material for Apple platforms; there is no official CSS package, and any web
+   * version is backdrop-filter plus layered borders. Naming it accurately here
+   * so nobody later assumes there is a vendor implementation to upgrade to.
+   *
+   * What makes this read as glass rather than as a blurred box is the edge, not
+   * the blur: a bright hairline where light catches the top rim, a darker one
+   * underneath, and a shadow tinted toward the ground colour instead of black.
+   * Blur alone is the flat, plastic version everyone ships.
+   * ------------------------------------------------------------------ */
+
+  .glass {
+    position: relative;
+    isolation: isolate;
+    background: var(--glass-tint);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(165%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(165%);
+    border: 1px solid var(--glass-edge-low);
+    box-shadow:
+      /* Inner top highlight: the lit rim. */
+      inset 0 1px 0 var(--glass-edge),
+      /* Inner bottom: the thickness of the pane. */
+      inset 0 -1px 0 rgb(var(--deep-rgb) / 0.06),
+      var(--glass-shadow);
+  }
+
+  /* The refraction hint: a gradient rim that is bright where light would enter
+     and fades before it wraps the whole shape. A uniform border reads as a
+     stroke; an uneven one reads as a bevel. */
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(150deg, var(--glass-edge), transparent 42%, transparent 70%, var(--glass-edge-low));
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
   /* A real object: the map, a control, a table. Small radius, not the uniform
      16px that every generated card uses. */
   .surface-raised {
-    border: 1px solid var(--line);
     border-radius: 10px 10px 10px 2px;
     background: var(--glass-tint-solid);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    box-shadow: var(--glass-shadow);
-    border-top-width: 1px;
-  }
-
-  /* Something that needs attention without shouting: a left edge, not a box.
-     The bar carries the meaning, so the text keeps the page's normal rhythm. */
-  .surface-alert {
-    border-top: 0;
-    border-left: 3px solid var(--accent);
-    border-radius: 0 6px 6px 0;
-    background: rgb(var(--surface-rgb) / 0.55);
-  }
-
-  .surface-signal {
-    border-left-color: var(--signal);
-  }
-
-  /* Recessed: secondary detail, sunk slightly into the page rather than raised
-     off it, so it reads as subordinate at a glance. */
-  .surface-quiet {
-    border-top: 0;
-    border-radius: 4px;
-    /* color-mix rather than a hardcoded rgb fallback: --ink is redefined per
-       palette AND per theme, so mixing against it stays correct in all four
-       combinations instead of baking a light-mode navy into dark mode. */
-    background: color-mix(in srgb, var(--ink) 4%, transparent);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    border: 1px solid var(--glass-edge-low);
+    box-shadow:
+      inset 0 1px 0 var(--glass-edge),
+      var(--glass-shadow);
   }
 
   /* Kept as an alias so any surface still marked `panel` inherits the new
      language rather than silently keeping the old card. */
   .panel {
     position: relative;
-    border: 1px solid var(--line);
     border-radius: 10px 10px 10px 2px;
     background: var(--glass-tint-solid);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    box-shadow: var(--glass-shadow);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    border: 1px solid var(--glass-edge-low);
+    box-shadow:
+      inset 0 1px 0 var(--glass-edge),
+      var(--glass-shadow);
   }
 
   .panel-read {
     background: var(--glass-tint-solid);
   }
 
-  @supports not (backdrop-filter: blur(1px)) {
+  /* Two separate opt-outs, because they are different needs.
+
+     A browser without backdrop-filter would render the tint as flat
+     translucency over whatever is behind it, which is where glass stops being
+     legible. And prefers-reduced-transparency is an accessibility setting: some
+     people find translucent layers genuinely hard to read through. Both get an
+     opaque surface, not a thinner blur. */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass,
     .panel,
     .surface-raised {
       background: var(--surface);
     }
+    .glass::before {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .glass,
+    .panel,
+    .surface-raised {
+      background: var(--surface);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    .glass::before {
+      display: none;
+    }
+  }
+
+  /* The emergency path opts OUT of glass entirely. Translucency inherits
+     whatever sits behind it, so contrast over arbitrary content is not a
+     knowable quantity - and the SOS screen is the one place where it has to
+     be. Solid, always. */
+  .surface-solid,
+  .surface-solid.panel,
+  .surface-solid.glass {
+    background: var(--surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-color: var(--line);
+    box-shadow: none;
+  }
+
+  .surface-solid::before {
+    display: none;
   }
 }

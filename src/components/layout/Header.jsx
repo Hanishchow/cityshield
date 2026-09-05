@@ -15,7 +15,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 px-5 pt-4 md:px-8">
       {/* A glass bar floating on the deck rather than a flat strip glued to the
           viewport edge - one surface language across the whole site. */}
-      <div className="panel mx-auto flex h-16 max-w-shell items-center justify-between gap-4 px-4 md:px-5">
+      <div className="glass mx-auto flex h-16 max-w-shell items-center justify-between gap-4 rounded-xl px-4 md:px-5">
         <Link to="/" className="rounded-sm no-underline" aria-label="City Shield home">
           <Logo size={28} />
         </Link>
