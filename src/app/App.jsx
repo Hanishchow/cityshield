@@ -1,4 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react';
+import RouteBoundary from './RouteBoundary.jsx';
+import { clearChunkReloadFlag } from './chunkReload.js';
 import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom';
 
 import Header from '../components/layout/Header.jsx';
@@ -21,6 +23,12 @@ const Styleguide = lazy(() => import('../pages/Styleguide.jsx'));
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => window.scrollTo(0, 0), [pathname]);
+
+  /* Once a route has rendered successfully the app is healthy, so the one-shot
+     reload guard is cleared and a future stale-chunk failure can recover too. */
+  useEffect(() => {
+    clearChunkReloadFlag();
+  }, []);
   return null;
 }
 
@@ -53,17 +61,22 @@ export default function App() {
         <Header />
 
         <main id="main">
-          <Suspense fallback={<div className="px-5 py-24 text-center text-small text-ink-3">Loading…</div>}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/sos" element={<Sos />} />
-              <Route path="/track/:incidentId" element={<Track />} />
-              <Route path="/live/:incidentId" element={<Live />} />
-              <Route path="/report" element={<Report />} />
-              <Route path="/styleguide" element={<Styleguide />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
+          {/* Keyed on the path so React remounts the boundary on navigation:
+              a route that failed recovers as soon as the person goes elsewhere,
+              rather than staying broken for the rest of the session. */}
+          <RouteBoundary key={pathname}>
+            <Suspense fallback={<div className="px-5 py-24 text-center text-small text-ink-3">Loading…</div>}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/sos" element={<Sos />} />
+                <Route path="/track/:incidentId" element={<Track />} />
+                <Route path="/live/:incidentId" element={<Live />} />
+                <Route path="/report" element={<Report />} />
+                <Route path="/styleguide" element={<Styleguide />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </RouteBoundary>
         </main>
 
         <Footer />
