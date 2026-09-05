@@ -59,7 +59,7 @@ describe('canTransition', () => {
 });
 
 describe('newIncidentId', () => {
-  const AMBIGUOUS = /[0O1IL5SB8]/;
+  const _AMBIGUOUS = /[0O1IL5SB8]/;
 
   it('matches the expected format CS-XXX-XXX', () => {
     const id = newIncidentId();

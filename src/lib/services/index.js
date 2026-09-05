@@ -11,11 +11,23 @@
 import { geolocation } from './geolocation.js';
 import { MOCK_FACILITIES, MOCK_WARD, distanceKm, delay } from './mockData.js';
 
-const key = (name) => import.meta.env[name] || null;
+/**
+ * Read env vars by LITERAL reference, never through a computed key.
+ *
+ * Vite performs a static text substitution on `import.meta.env.VITE_X`. A
+ * dynamic lookup like `import.meta.env[name]` has nothing to substitute, so it
+ * survives into the bundle as a property read against an object that no longer
+ * carries the value. It works in dev, where import.meta.env is a real object,
+ * and silently returns undefined in the production build.
+ *
+ * The symptom was quiet and bad: with a key configured, the deployed app still
+ * reported its map and geocode adapters as mocked, because this returned null.
+ */
+const clean = (v) => (typeof v === 'string' && v.trim() ? v.trim() : null);
 
 export const config = {
-  maps: key('VITE_MAPS_API_KEY'),
-  places: key('VITE_PLACES_API_KEY') || key('VITE_MAPS_API_KEY'),
+  maps: clean(import.meta.env.VITE_MAPS_API_KEY),
+  places: clean(import.meta.env.VITE_PLACES_API_KEY) ?? clean(import.meta.env.VITE_MAPS_API_KEY),
 };
 
 /** Which adapters are live vs mocked — surfaced in the UI so nothing pretends. */

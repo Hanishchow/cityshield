@@ -1,4 +1,3 @@
-import { config } from '../config.ts';
 import { createMemoryStore } from './memory.ts';
 import type { Store } from './types.ts';
 

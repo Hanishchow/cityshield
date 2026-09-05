@@ -52,7 +52,7 @@ export default async function incidentRoutes(app: FastifyInstance) {
   });
 
   /** Propose a state change. The server decides whether it is legal. */
-  app.patch('/incidents/:id/state', async (req, reply) => {
+  app.patch('/incidents/:id/state', async (req) => {
     const { id } = idParam.parse(req.params);
     const { to } = z.object({ to: z.enum(INCIDENT_STATES) }).parse(req.body);
     const incident = await store.transition(id, to);

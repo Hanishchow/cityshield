@@ -19,13 +19,16 @@ import { PERMISSION, useLocationPermission } from './useLocationPermission.js';
 
 /** The explain-then-ask card, shown until the question is settled either way. */
 export default function LocationGate({ onSettled }) {
-  const { state, request } = useLocationPermission();
+  const { state, fixError, request } = useLocationPermission();
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (state === PERMISSION.granted || state === PERMISSION.denied) onSettled?.(state);
   }, [state, onSettled]);
 
+  /* Granted is granted. The card disappears on permission, not on a successful
+     fix: a device that has not produced coordinates yet is normal, and asking
+     again for access we already hold is what made this reappear in a loop. */
   if (state === PERMISSION.granted || state === PERMISSION.unknown) return null;
 
   const denied = state === PERMISSION.denied;
@@ -46,7 +49,9 @@ export default function LocationGate({ onSettled }) {
           ? 'Responders will not receive your coordinates automatically. You can still report - describe a nearby landmark instead. To re-enable it, open the padlock in your address bar and allow Location for this site.'
           : unsupported
             ? 'You can still report an emergency. Describe a nearby landmark, or call 112 directly.'
-            : 'Your coordinates are sent only when you raise an incident, and only to the agencies handling it. Without them, dispatch depends on you describing where you are, which costs minutes.'}
+            : fixError
+              ? 'Your browser allowed it, but no position came back. That is common indoors or on a desktop without GPS. Try again near a window, or report anyway and describe a landmark.'
+              : 'Your coordinates are sent only when you raise an incident, and only to the agencies handling it. Without them, dispatch depends on you describing where you are, which costs minutes.'}
       </p>
 
       {!denied && !unsupported && (
@@ -59,7 +64,7 @@ export default function LocationGate({ onSettled }) {
             }}
             disabled={busy}
           >
-            {busy ? 'Waiting for your browser' : 'Allow location'}
+            {busy ? 'Waiting for your browser' : fixError ? 'Try again' : 'Allow location'}
           </Button>
           <a href="tel:112" className="text-small font-semibold">
             Or call 112 now
