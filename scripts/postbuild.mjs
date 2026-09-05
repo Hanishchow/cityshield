@@ -7,7 +7,15 @@
  * which would silently break assets if any ever land there.
  */
 
-import { copyFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'node:fs';
+import {
+  copyFileSync,
+  writeFileSync,
+  readFileSync,
+  existsSync,
+  readdirSync,
+  statSync,
+  mkdirSync,
+} from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -16,6 +24,29 @@ const DIST = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 if (!existsSync(join(DIST, 'index.html'))) {
   console.error('postbuild: dist/index.html missing — run the build first');
   process.exit(1);
+}
+
+/**
+ * Stamp the build id into the service worker.
+ *
+ * A service worker is only reinstalled when its own bytes differ from the
+ * installed copy. A hardcoded version meant sw.js was byte-identical on every
+ * deploy, so `activate` never fired, stale caches were never purged, and people
+ * kept getting the previous build until they hard-reloaded. Deriving the id
+ * from the built entry bundle ties cache lifetime to actual content.
+ */
+const entry =
+  readdirSync(join(DIST, 'assets')).find((f) => /^index-.*\.js$/.test(f)) ?? String(Date.now());
+const BUILD_ID = entry.replace(/^index-|\.js$/g, '');
+
+const swPath = join(DIST, 'sw.js');
+if (existsSync(swPath)) {
+  const sw = readFileSync(swPath, 'utf8');
+  if (!sw.includes('__BUILD_ID__')) {
+    console.error('postbuild: sw.js has no __BUILD_ID__ placeholder - cache would never invalidate');
+    process.exit(1);
+  }
+  writeFileSync(swPath, sw.replaceAll('__BUILD_ID__', BUILD_ID));
 }
 
 copyFileSync(join(DIST, 'index.html'), join(DIST, '404.html'));

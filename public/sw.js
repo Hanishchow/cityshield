@@ -1,34 +1,49 @@
 /**
  * Service worker.
  *
- * Strategy is chosen per request type, because the wrong one here is dangerous:
+ * Strategy per request type, because the wrong one here is dangerous:
  *
- *  - The APP SHELL is cache-first. It must open on a dead connection; that is
- *    the entire reason this is a PWA rather than a website.
+ *  - NAVIGATIONS are network-first. The HTML names which fingerprinted bundles
+ *    to load, so serving a stale copy points the app at the previous build.
+ *  - /assets/* is cache-first, which is safe precisely because those filenames
+ *    contain a content hash: a changed file is a different URL, so a cached
+ *    entry can never be the wrong version of anything.
+ *  - Everything else same-origin is stale-while-revalidate, so a bad entry
+ *    heals itself on the next visit instead of being pinned forever.
  *  - API calls are NETWORK-ONLY. Never serve a cached incident: showing someone
- *    a stale "ambulance en route" for an incident that was cancelled is worse
- *    than showing nothing at all.
- *  - Map tiles are cache-first with a cap, since they are immutable per URL.
+ *    "ambulance en route" for an incident that was cancelled is worse than
+ *    showing nothing.
+ *
+ * BUILD_ID is rewritten by scripts/postbuild.mjs on every build. That matters
+ * more than it looks: a service worker is only reinstalled when its own bytes
+ * change. With a hardcoded version the file stayed identical across deploys, so
+ * `activate` never ran, old caches were never purged, and users kept being
+ * served the previous build until they hard-reloaded.
  */
 
-const VERSION = 'v1';
-const SHELL = `shell-${VERSION}`;
-const TILES = `tiles-${VERSION}`;
+const BUILD_ID = '__BUILD_ID__';
+const SHELL = `shell-${BUILD_ID}`;
+const TILES = `tiles-${BUILD_ID}`;
 const TILE_LIMIT = 260;
 
-self.addEventListener('install', (e) => {
-  /* Only the entry document is precached. Vite fingerprints its assets, so
-     listing them here would go stale on the next build. */
-  e.waitUntil(caches.open(SHELL).then((c) => c.addAll(['./', './index.html'])));
+self.addEventListener('install', (event) => {
+  /* Only the entry document is precached. Vite fingerprints everything else, so
+     listing those here would go stale on the next build. */
+  event.waitUntil(
+    caches
+      .open(SHELL)
+      .then((c) => c.addAll(['./', './index.html']))
+      .catch(() => undefined),
+  );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
     caches
       .keys()
       .then((keys) =>
-        Promise.all(keys.filter((k) => !k.endsWith(VERSION)).map((k) => caches.delete(k))),
+        Promise.all(keys.filter((k) => !k.endsWith(BUILD_ID)).map((k) => caches.delete(k))),
       )
       .then(() => self.clients.claim()),
   );
@@ -46,8 +61,8 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
 
-  /* Anything that reports live state is never served from cache. */
-  if (url.pathname.includes('/v1/') || url.pathname === '/health') return;
+  /* Anything reporting live state is never served from cache. */
+  if (url.pathname.includes('/v1/') || url.pathname.endsWith('/health')) return;
 
   if (url.hostname.endsWith('maptiler.com') || url.hostname.endsWith('mappls.com')) {
     event.respondWith(
@@ -65,8 +80,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  /* Navigations: network first so a deployed update is picked up, falling back
-     to the cached shell when offline. */
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
@@ -80,16 +93,34 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (url.origin === self.location.origin) {
+  if (url.origin !== self.location.origin) return;
+
+  /* Content-hashed and therefore immutable: cache-first is free correctness. */
+  if (url.pathname.includes('/assets/')) {
     event.respondWith(
-      caches.match(request).then(
-        (hit) =>
-          hit ??
-          fetch(request).then((res) => {
-            if (res.ok) caches.open(SHELL).then((c) => c.put(request, res.clone()));
-            return res;
-          }),
-      ),
+      caches.open(SHELL).then(async (cache) => {
+        const hit = await cache.match(request);
+        if (hit) return hit;
+        const res = await fetch(request);
+        if (res.ok) cache.put(request, res.clone());
+        return res;
+      }),
     );
+    return;
   }
+
+  /* Everything else: serve what we have, but always refresh in the background so
+     a stale entry survives at most one visit. */
+  event.respondWith(
+    caches.open(SHELL).then(async (cache) => {
+      const hit = await cache.match(request);
+      const network = fetch(request)
+        .then((res) => {
+          if (res.ok) cache.put(request, res.clone());
+          return res;
+        })
+        .catch(() => hit);
+      return hit || network;
+    }),
+  );
 });
