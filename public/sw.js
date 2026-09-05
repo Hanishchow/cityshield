@@ -29,10 +29,18 @@ const TILE_LIMIT = 260;
 self.addEventListener('install', (event) => {
   /* Only the entry document is precached. Vite fingerprints everything else, so
      listing those here would go stale on the next build. */
+  /* Same trap as the navigation branch: addAll() goes through the HTTP cache,
+     so precaching plain './index.html' right after a deploy can store the
+     previous build's HTML. Requesting with cache 'reload' forces the network. */
   event.waitUntil(
     caches
       .open(SHELL)
-      .then((c) => c.addAll(['./', './index.html']))
+      .then((c) =>
+        c.addAll([
+          new Request('./', { cache: 'reload' }),
+          new Request('./index.html', { cache: 'reload' }),
+        ]),
+      )
       .catch(() => undefined),
   );
   self.skipWaiting();
@@ -82,7 +90,14 @@ self.addEventListener('fetch', (event) => {
 
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
+      /* `cache: 'no-store'` is the whole point of this branch.
+         GitHub Pages serves index.html with Cache-Control: max-age=600, and a
+         plain fetch() honours the browser HTTP cache. So for ten minutes after a
+         deploy the worker was handed the PREVIOUS index.html, which names
+         content-hashed bundles that no longer exist: the app booted against a
+         dead chunk and rendered nothing. The HTML is the one file that must
+         always come from the network, because it decides which bundles load. */
+      fetch(request, { cache: 'no-store' })
         .then((res) => {
           const copy = res.clone();
           caches.open(SHELL).then((c) => c.put('./index.html', copy));
