@@ -1,0 +1,56 @@
+{
+  "name": "City Shield: one incident, every agency",
+  "short_name": "City Shield",
+  "description": "Raise one emergency incident that ambulance, police and civic services all attach to, and follow the response live.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f6fa",
+  "theme_color": "#14294f",
+  "categories": [
+    "utilities",
+    "government",
+    "medical"
+  ],
+  "lang": "en-IN",
+  "icons": [
+    {
+      "src": "brand/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "brand/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "brand/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "brand/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Emergency SOS",
+      "short_name": "SOS",
+      "description": "Raise an emergency immediately",
+      "url": "sos"
+    },
+    {
+      "name": "Report an incident",
+      "short_name": "Report",
+      "url": "report"
+    }
+  ]
+}
