@@ -28,6 +28,13 @@ export const config = {
   mapplsClientSecret: str('MAPPLS_CLIENT_SECRET'),
   olaKey: str('OLA_MAPS_API_KEY'),
 
+  /**
+   * Per-junction preemption keys. Absent => keys are derived from tokenSecret,
+   * which is fine for development and the bench demo but shares one root, so
+   * `capabilities()` reports it as `dev-derived` rather than pretending.
+   */
+  junctionKeysFile: str('JUNCTION_KEYS_FILE'),
+
   /** Signing secret for incident capability tokens. */
   tokenSecret: str('TOKEN_SECRET') ?? 'dev-insecure-secret-do-not-ship',
 
@@ -51,6 +58,10 @@ export const config = {
 export const capabilities = () => ({
   store: config.databaseUrl ? 'postgres' : 'memory',
   geocode: config.mapplsKey || config.mapplsClientId ? 'mappls' : config.olaKey ? 'ola' : 'mock',
+  /* Not 'mock' vs 'live': both modes really sign frames. The distinction is
+     whether keys were provisioned per junction or derived from one dev root,
+     which is a materially weaker guarantee and has to say so. */
+  preempt: config.junctionKeysFile ? ('provisioned' as const) : ('dev-derived' as const),
   dispatch: 'mock' as const, // Tier 2: needs a government MoU, not a key
   notify: 'mock' as const, // needs an SMS provider agreement
 });
