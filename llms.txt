@@ -1,0 +1,35 @@
+# City Shield
+
+> A Bengaluru emergency service prototype. One incident record that ambulance,
+> police, fire and BBMP civic services all attach to, replacing the need to know
+> which of eight public helplines to call.
+
+## What it does
+
+- One action raises an incident. The citizen never chooses a department; a
+  server-side routing policy assigns a primary agency and attaches secondaries.
+- Location is captured with its accuracy and source shown, never as a falsely
+  precise pin.
+- Every responding agency shares one record and can see the others.
+- Live tracking shows units converging on the incident on a real map.
+
+## Important limitations
+
+- This is a PROTOTYPE. It does NOT dispatch real emergency services. Real
+  dispatch requires an integration with ERSS-112 that needs a government
+  agreement.
+- Responder positions shown in live tracking are simulated, and labelled as such
+  in the interface.
+- BBMP ward numbers are stand-in data; ward boundaries are not available in the
+  underlying map data.
+- In a real emergency in India, call 112.
+
+## Pages
+
+- https://hanishchow.github.io/cityshield/ : what the service is, what it covers, how it works
+- https://hanishchow.github.io/cityshield/sos : the emergency control
+- https://hanishchow.github.io/cityshield/report : reporting a civic or non-urgent issue
+
+## Contact
+
+Emergency: 112 (India, all services)
