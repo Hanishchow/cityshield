@@ -41,13 +41,13 @@ const SWATCHES = [
 
 function Section({ n, title, lead, children }) {
   return (
-    <section className="mt-16">
-      <div className="flex items-baseline gap-4 border-b border-line pb-3">
+    <section className="mt-24 md:mt-32">
+      <div className="flex items-baseline gap-4 border-b border-line pb-5">
         <span className="font-data text-micro text-ink-3">{n}</span>
         <h2 className="text-h2 text-ink">{title}</h2>
       </div>
       {lead && <p className="mt-4 max-w-prose text-body text-ink-2">{lead}</p>}
-      <div className="mt-7">{children}</div>
+      <div className="mt-10 md:mt-12">{children}</div>
     </section>
   );
 }
@@ -77,7 +77,7 @@ export default function Styleguide() {
   return (
     <>
       <Seo title="Design system" description="Tokens, surfaces and type scale for the City Shield interface." noindex />
-      <div className="mx-auto max-w-shell px-6 py-12 md:px-10">
+      <div className="mx-auto max-w-shell px-5 py-20 md:px-10 md:py-28 lg:px-16">
       <p className="label-caps">Chunk 0 - design proof</p>
       <h1 className="mt-3 text-h1 text-ink">Instrument Glass</h1>
       <p className="mt-4 max-w-prose text-lead text-ink-2">

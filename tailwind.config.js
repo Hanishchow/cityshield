@@ -59,7 +59,13 @@ export default {
         glass: 'var(--glass-shadow)',
         none: 'none',
       },
-      maxWidth: { prose: '68ch', shell: '1240px', narrow: '820px' },
+      maxWidth: {
+        prose: '68ch',
+        measure: '880px',
+        shell: '1240px',
+        wide: '1400px',
+        narrow: '820px',
+      },
       transitionTimingFunction: {
         ease: 'var(--ease)',
         out: 'var(--ease-out)',

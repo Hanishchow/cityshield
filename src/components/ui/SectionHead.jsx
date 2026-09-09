@@ -7,12 +7,12 @@ import { cn } from '../../lib/utils/format.js';
  */
 export default function SectionHead({ index, title, lead, serif = false, className }) {
   return (
-    <header className={cn('border-b border-line pb-4', className)}>
+    <header className={cn('border-b border-line pb-6', className)}>
       <div className="flex items-baseline gap-4">
         {index && <span className="font-data text-micro text-ink-3">{index}</span>}
         <h2 className={cn('text-h2 text-ink', serif && 'font-semibold')}>{title}</h2>
       </div>
-      {lead && <p className="mt-3 max-w-prose text-body text-ink-2">{lead}</p>}
+      {lead && <p className="mt-4 max-w-prose text-body text-ink-2">{lead}</p>}
     </header>
   );
 }

@@ -64,12 +64,16 @@ const COMPLIANCE = [
  * work") is a templated tell that adds nothing a reader cannot already see:
  * the section's position on the page is what orders it. The headline alone
  * carries the meaning.
+ *
+ * The gap below is deliberately large. A 30px heading separated from its body
+ * by 28px is not acting as a heading, and a 13px lead under it is a scale
+ * mismatch rather than a spacing one - so the lead is body size.
  */
 function Head({ title, lead }) {
   return (
-    <header className="mb-7">
+    <header className="mb-10 md:mb-14">
       <h2 className="text-h2 text-ink">{title}</h2>
-      {lead && <p className="mt-3 max-w-prose text-small text-ink-2">{lead}</p>}
+      {lead && <p className="mt-4 max-w-prose text-body text-ink-2">{lead}</p>}
     </header>
   );
 }
@@ -87,63 +91,79 @@ export default function Home() {
     <>
       <Seo description="Raise one emergency in Bengaluru and every responding agency - ambulance, police, fire, BBMP civic - attaches to the same record. No choosing which helpline to call." />
 
-      {/* Hero */}
-      <Section className="pb-4 pt-6">
-        <div className="grid items-center gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-8">
-            <h1 className="text-[2.6rem] leading-[1.0] tracking-[-0.035em] md:text-display">
-              <span className="block font-light text-ink-3">Six helplines.</span>
-              <span className="block font-extrabold text-ink">One incident.</span>
-            </h1>
+      {/* Hero. Given its own column rather than a 12-grid: the second cell held
+          the 3D shield and has been empty since that was removed. */}
+      <Section space="flush" width="text" className="pb-20 pt-16 md:pb-32 md:pt-28">
+        <h1 className="text-[2.6rem] leading-[1.0] tracking-[-0.035em] md:text-display">
+          <span className="block font-light text-ink-3">Six helplines.</span>
+          <span className="block font-extrabold text-ink">One incident.</span>
+        </h1>
 
-            <p className="mt-6 max-w-prose text-lead text-ink-2">
-              A Bengaluru service that replaces knowing <em>which number to call</em> with a
-              single action, then keeps every responding agency attached to the same record
-              instead of six disconnected phone calls.
-            </p>
+        <p className="mt-8 max-w-prose text-lead text-ink-2">
+          A Bengaluru service that replaces knowing <em>which number to call</em> with a
+          single action, then keeps every responding agency attached to the same record
+          instead of six disconnected phone calls.
+        </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button to="/sos" variant="signal" size="lg">
-                Emergency SOS
-              </Button>
-              <Button to="/report" variant="frame" size="lg">
-                Report something
-              </Button>
-            </div>
-
-            <p className="mt-6 text-small text-ink-3">
-              Prototype on mock data. In a real emergency, call{' '}
-              <a href="tel:112" className="font-semibold text-ink">
-                112
-              </a>
-              .
-            </p>
-          </div>
-
+        <div className="mt-12 flex flex-wrap items-center gap-3">
+          <Button to="/sos" variant="signal" size="lg">
+            Emergency SOS
+          </Button>
+          <Button to="/report" variant="frame" size="lg">
+            Report something
+          </Button>
         </div>
+
+        <p className="mt-8 text-small text-ink-3">
+          Prototype on mock data. In a real emergency, call{' '}
+          <a href="tel:112" className="font-semibold text-ink">
+            112
+          </a>
+          .
+        </p>
       </Section>
 
       {/* Location permission. Placed high, because it is the one thing that
-          makes everything below faster, and asked for with a reason attached. */}
-      <Section className="py-4">
+          makes everything below faster, and asked for with a reason attached.
+          Kept tight against the hero: it belongs to it. */}
+      <Section space="tight">
         <LocationGate />
       </Section>
 
       {/* Readouts */}
-      <Section className="py-6">
-        <div className="grid grid-cols-2 gap-x-8 gap-y-7 border-t border-line pt-7 md:grid-cols-4 md:divide-x md:divide-line/60">
+      <Section divided>
+        <div className="grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4 md:gap-x-12 md:divide-x md:divide-line/60">
           <Readout label="Helplines replaced" value="6" note="One action instead of a taxonomy" />
-          <Readout label="Dispatch target" value="90" unit="s" note="Report to acknowledgement" className="md:pl-8" />
-          <Readout label="Shared record" value="1" note="Per incident, however many agencies" className="md:pl-8" />
-          <Readout label="Fallback" value="112" note="Reachable from every screen" className="md:pl-8" />
+          <Readout
+            label="Dispatch target"
+            value="90"
+            unit="s"
+            note="Report to acknowledgement"
+            className="md:pl-12"
+          />
+          <Readout
+            label="Shared record"
+            value="1"
+            note="Per incident, however many agencies"
+            className="md:pl-12"
+          />
+          <Readout
+            label="Fallback"
+            value="112"
+            note="Reachable from every screen"
+            className="md:pl-12"
+          />
         </div>
       </Section>
 
       {/* Instruction video */}
-      <Section className="py-8">
-        <div className="grid gap-8 lg:grid-cols-12">
+      <Section divided>
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
-            <Head title="See it work" lead="Ninety seconds, start to finish: raising an incident, watching the agencies attach, and following a unit to your door." />
+            <Head
+              title="See it work"
+              lead="Ninety seconds, start to finish: raising an incident, watching the agencies attach, and following a unit to your door."
+            />
             <p className="text-small text-ink-3">
               If you would rather read it, every step is written out below.
             </p>
@@ -155,98 +175,88 @@ export default function Home() {
       </Section>
 
       {/* The problem */}
-      <Section className="py-8">
-        <div className="border-t border-line pt-8">
-          <Head
-            title="The number you need is the one you forget"
-            lead="Bengaluru runs at least eight public emergency numbers. Under stress, recalling the right one is the first thing that fails, and the wrong one costs a transfer."
-          />
-          <DataTable
-            columns={[
-              { key: 'n', header: 'Number', mono: true, strong: true, width: '6.5rem' },
-              { key: 'service', header: 'Service', strong: true },
-              { key: 'note', header: 'In practice' },
-            ]}
-            rows={HELPLINES}
-            rowKey="n"
-            caption="Public emergency numbers serving Bengaluru today"
-          />
-        </div>
+      <Section divided>
+        <Head
+          title="The number you need is the one you forget"
+          lead="Bengaluru runs at least eight public emergency numbers. Under stress, recalling the right one is the first thing that fails, and the wrong one costs a transfer."
+        />
+        <DataTable
+          columns={[
+            { key: 'n', header: 'Number', mono: true, strong: true, width: '6.5rem' },
+            { key: 'service', header: 'Service', strong: true },
+            { key: 'note', header: 'In practice' },
+          ]}
+          rows={HELPLINES}
+          rowKey="n"
+          caption="Public emergency numbers serving Bengaluru today"
+        />
       </Section>
 
       {/* Coverage */}
-      <Section className="py-8">
-        <div className="border-t border-line pt-8">
-          <Head
-            title="What it covers"
-            lead="You pick what happened. The routing table decides who owns it and who else attaches. It is published here rather than hidden, because a citizen should be able to check where their report went."
-          />
-          <div className="grid gap-x-10 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
-            {EMERGENCY_CATEGORIES.map((c) => (
-              <div key={c.id} className="border-t border-line/70 pt-4">
-                <h3 className="text-body font-semibold text-ink">{c.label}</h3>
-                <p className="mt-1.5 text-small text-ink-2">{c.blurb}</p>
-                <p className="mt-3 font-data text-micro uppercase tracking-[0.09em] text-ink-3">
-                  {[c.primary, ...(c.secondary ?? [])].map((a) => AGENCY_LABEL[a] ?? a).join(' · ')}
-                </p>
-              </div>
-            ))}
-          </div>
+      <Section divided>
+        <Head
+          title="What it covers"
+          lead="You pick what happened. The routing table decides who owns it and who else attaches. It is published here rather than hidden, because a citizen should be able to check where their report went."
+        />
+        <div className="grid gap-x-12 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-14">
+          {EMERGENCY_CATEGORIES.map((c) => (
+            <div key={c.id} className="border-t border-line/70 pt-5">
+              <h3 className="text-body font-semibold text-ink">{c.label}</h3>
+              <p className="mt-2.5 text-small text-ink-2">{c.blurb}</p>
+              <p className="mt-4 font-data text-micro uppercase tracking-[0.09em] text-ink-3">
+                {[c.primary, ...(c.secondary ?? [])].map((a) => AGENCY_LABEL[a] ?? a).join(' · ')}
+              </p>
+            </div>
+          ))}
         </div>
       </Section>
 
       {/* How it works */}
-      <Section className="py-8">
-        <div className="border-t border-line pt-8">
-          <Head title="How it works" />
-          <ol className="grid list-none gap-x-10 gap-y-7 p-0 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((s) => (
-              <li key={s.t} className="border-t border-line/70 pt-4">
-                <h3 className="text-body font-semibold text-ink">{s.t}</h3>
-                <p className="mt-1.5 text-small text-ink-2">{s.d}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
+      <Section divided>
+        <Head title="How it works" />
+        <ol className="grid list-none gap-x-12 gap-y-12 p-0 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-16">
+          {STEPS.map((s) => (
+            <li key={s.t} className="border-t border-line/70 pt-5">
+              <h3 className="text-body font-semibold text-ink">{s.t}</h3>
+              <p className="mt-2.5 text-small text-ink-2">{s.d}</p>
+            </li>
+          ))}
+        </ol>
       </Section>
 
       {/* Commitments */}
-      <Section className="py-8">
-        <div className="border-t border-line pt-8">
-          <Head title="What we commit to" />
-          <div className="grid gap-x-12 gap-y-8 lg:grid-cols-2">
-            {COMMITMENTS.map((c) => (
-              <div key={c.t} className="surface-alert py-1 pl-5">
-                <h3 className="text-body font-semibold text-ink">{c.t}</h3>
-                <p className="mt-2 max-w-prose text-small text-ink-2">{c.d}</p>
-              </div>
-            ))}
-          </div>
+      <Section divided>
+        <Head title="What we commit to" />
+        <div className="grid gap-x-16 gap-y-12 lg:grid-cols-2 lg:gap-y-14">
+          {COMMITMENTS.map((c) => (
+            <div key={c.t} className="surface-alert py-1 pl-6">
+              <h3 className="text-body font-semibold text-ink">{c.t}</h3>
+              <p className="mt-3 max-w-prose text-small text-ink-2">{c.d}</p>
+            </div>
+          ))}
+        </div>
 
-          <div className="mt-9 flex flex-wrap items-center gap-2.5 border-t border-line/70 pt-6">
-            {COMPLIANCE.map(([label, tone]) => (
-              <StatusPill key={label} tone={tone}>
-                {label}
-              </StatusPill>
-            ))}
-          </div>
+        <div className="mt-16 flex flex-wrap items-center gap-2.5 border-t border-line/70 pt-8">
+          {COMPLIANCE.map(([label, tone]) => (
+            <StatusPill key={label} tone={tone}>
+              {label}
+            </StatusPill>
+          ))}
         </div>
       </Section>
 
       {/* Close */}
-      <Section className="py-10">
-        <div className="border-t border-line pt-8">
-          <h2 className="max-w-2xl text-h1 text-ink">
-            One action. Every agency that needs to know, already knowing.
-          </h2>
-          <div className="mt-7 flex flex-wrap items-center gap-3">
-            <Button to="/sos" variant="signal" size="lg">
-              Emergency SOS
-            </Button>
-            <Button to="/report" variant="outline" size="lg">
-              Report something
-            </Button>
-          </div>
+      <Section divided width="text">
+        <h2 className="text-h1 text-ink">
+          One action. Every agency that needs to know, already knowing.
+        </h2>
+        <div className="mt-10 flex flex-wrap items-center gap-3">
+          <Button to="/sos" variant="signal" size="lg">
+            Emergency SOS
+          </Button>
+          <Button to="/report" variant="outline" size="lg">
+            Report something
+          </Button>
         </div>
       </Section>
     </>

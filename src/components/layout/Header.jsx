@@ -12,7 +12,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 px-5 pt-4 md:px-8">
+    <header className="sticky top-0 z-40 px-5 pt-5 md:px-10 lg:px-16">
       {/* A glass bar floating on the deck rather than a flat strip glued to the
           viewport edge - one surface language across the whole site. */}
       <div className="glass mx-auto flex h-16 max-w-shell items-center justify-between gap-4 rounded-xl px-4 md:px-5">

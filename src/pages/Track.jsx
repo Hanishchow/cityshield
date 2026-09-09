@@ -60,7 +60,7 @@ export default function Track() {
 
   if (!incident) {
     return (
-      <Section className="pt-6"><Panel read className="p-6 md:p-10">
+      <Section><Panel read className="p-8 md:p-14">
         <StatusPill tone="neutral">No active report</StatusPill>
         <h1 className="mt-4 text-h1 text-ink">Nothing to track here</h1>
         <p className="mt-3 max-w-prose text-lead text-ink-2">
@@ -88,13 +88,13 @@ export default function Track() {
         description="The full record for one incident: every agency attached to it, every state change, and the timestamps behind them."
         noindex
       />
-      <Section className="pt-6">
+      <Section width="wide">
       <div aria-live="polite" className="sr-only">
         Incident status: {STATES[incident.state]?.label}
       </div>
 
       {/* Header rail */}
-      <Panel read className="flex flex-wrap items-start justify-between gap-5 p-6 md:p-8">
+      <Panel read className="flex flex-wrap items-start justify-between gap-6 p-8 md:p-10">
         <div>
           <div className="flex flex-wrap items-center gap-3">
             <StatusPill tone={incident.severity === 'critical' ? 'signal' : 'warn'}>
@@ -124,9 +124,9 @@ export default function Track() {
         permission.
       </MockNotice>
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-12">
+      <div className="mt-5 grid gap-8 lg:grid-cols-12">
         {/* Agencies - the interconnection, made visible */}
-        <Panel read className="p-6 md:p-8 lg:col-span-7">
+        <Panel read className="p-8 md:p-10 lg:col-span-7">
           <h2 className="text-h2 text-ink">Agencies on this incident</h2>
           <p className="mt-2 max-w-prose text-small text-ink-2">
             All of these are attached to the same record. Each can see the others&apos;
@@ -169,7 +169,7 @@ export default function Track() {
 
         {/* Timeline - every entry backed by a real state transition */}
         <div className="lg:col-span-5">
-          <Panel read className="p-6">
+          <Panel read className="p-7">
             <h2 className="text-h3 text-ink">Status</h2>
             <ol className="mt-5">
               {PROGRESS_STATES.map((s, i) => {

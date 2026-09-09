@@ -12,10 +12,10 @@ const HELPLINES = [
 
 export default function Footer() {
   return (
-    <Section as="footer" className="pb-24 pt-6 md:pb-12">
-      <Panel read className="p-6 md:p-9">
+    <Section as="footer" space="flush" className="pb-24 pt-20 md:pb-16 md:pt-32">
+      <Panel read className="p-8 md:p-12">
         {/* City Shield must degrade to being a very good phone dialer. */}
-        <div className="grid gap-8 lg:grid-cols-12">
+        <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
             <p className="text-body font-semibold text-ink">
               City Shield does not replace the emergency services.

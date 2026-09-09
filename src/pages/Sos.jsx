@@ -79,8 +79,8 @@ export default function Sos() {
   /* ---------- cancelled ---------- */
   if (incident?.state === 'cancelled') {
     return (
-      <Section className="pt-6">
-        <Panel read className="surface-solid p-6 md:p-10">
+      <Section>
+        <Panel read className="surface-solid p-8 md:p-14">
         <StatusPill tone="neutral">Cancelled</StatusPill>
         <h1 className="mt-4 text-h1 text-ink">Emergency cancelled</h1>
         <p className="mt-3 max-w-prose text-lead text-ink-2">
@@ -103,13 +103,13 @@ export default function Sos() {
   /* ---------- committed: choose what is happening ---------- */
   if (incident) {
     return (
-      <Section className="pt-6">
+      <Section>
         <div aria-live="assertive" className="sr-only">
           Emergency report created. Choose what is happening.
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-12">
-          <Panel read className="surface-solid p-6 md:p-8 lg:col-span-8">
+        <div className="grid gap-8 lg:grid-cols-12">
+          <Panel read className="surface-solid p-8 md:p-10 lg:col-span-8">
             <div className="flex flex-wrap items-center gap-3">
               <StatusPill tone="signal">Report open</StatusPill>
               <span className="font-data text-small text-ink-3">{incident.id}</span>
@@ -188,10 +188,10 @@ export default function Sos() {
         description="Hold to raise an emergency immediately. Your location and its accuracy are sent to the agencies that need it, and 112 stays one tap away."
         breadcrumbs={CRUMBS}
       />
-      <Section className="pt-6">
+      <Section>
         <Breadcrumbs trail={CRUMBS} />
-      <div className="grid items-center gap-5 lg:grid-cols-12">
-        <Panel read className="surface-solid p-6 md:p-9 lg:col-span-5">
+      <div className="grid items-center gap-8 lg:grid-cols-12">
+        <Panel read className="surface-solid p-8 md:p-12 lg:col-span-5">
           <StatusPill tone="signal">Emergency</StatusPill>
           <h1 className="mt-4 text-h1 leading-[1.06] text-ink">Hold to send an alert.</h1>
           <p className="mt-4 max-w-prose text-lead text-ink-2">

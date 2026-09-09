@@ -42,7 +42,7 @@ export default function Live() {
         description="Watch responding units converge on your incident in real time."
         noindex
       />
-      <Section className="pt-6">
+      <Section width="wide">
       {/* Status is announced politely: a screen reader user must not be
           interrupted every second by a ticking countdown. */}
       <div aria-live="polite" className="sr-only">
@@ -51,7 +51,7 @@ export default function Live() {
           : `Nearest unit ${nearest.agency}, ${formatEta(nearest.remainingSeconds)} away.`}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-12">
+      <div className="grid gap-8 lg:grid-cols-12">
         {/* Map */}
         <Panel className="overflow-hidden lg:col-span-7">
           <div className="relative aspect-[4/3] w-full sm:aspect-[16/11]">
@@ -61,7 +61,7 @@ export default function Live() {
 
         {/* Live rail */}
         <div className="lg:col-span-5">
-          <Panel read className="p-6 md:p-7">
+          <Panel read className="p-7 md:p-9">
             <div className="flex flex-wrap items-center gap-3">
               <StatusPill tone={allArrived ? 'ok' : 'signal'}>
                 {allArrived ? 'On scene' : 'Responding'}
@@ -94,7 +94,7 @@ export default function Live() {
             </div>
           </Panel>
 
-          <Panel read className="mt-5 p-6 md:p-7">
+          <Panel read className="mt-8 p-7 md:p-9">
             <h2 className="text-h3 text-ink">Units en route</h2>
             <p className="mt-2 text-small text-ink-2">
               Three agencies, one incident. Each sees the others&apos; position.

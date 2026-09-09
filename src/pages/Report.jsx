@@ -35,7 +35,7 @@ export default function Report() {
 
   if (reference) {
     return (
-      <Section className="pt-6"><Panel read className="p-6 md:p-10">
+      <Section><Panel read className="p-8 md:p-14">
         <StatusPill tone="ok">Submitted</StatusPill>
         <h1 className="mt-4 text-h1 text-ink">Report submitted</h1>
         <p className="mt-3 max-w-prose text-lead text-ink-2">
@@ -62,10 +62,10 @@ export default function Report() {
         description="Report a civic or non-life-threatening issue in Bengaluru - roads, water, drainage, debris - into the same shared record the emergency services use."
         breadcrumbs={CRUMBS}
       />
-      <Section className="pt-6">
+      <Section>
         <Breadcrumbs trail={CRUMBS} />
-      <div className="grid gap-5 lg:grid-cols-12">
-        <Panel read className="p-6 md:p-9 lg:col-span-5">
+      <div className="grid gap-8 lg:grid-cols-12">
+        <Panel read className="p-8 md:p-12 lg:col-span-5">
           <h1 className="text-h1 font-extrabold leading-[1.03] tracking-[-0.03em] text-ink">
             Report a civic issue.
           </h1>
@@ -93,7 +93,7 @@ export default function Report() {
           </div>
         </Panel>
 
-        <Panel read as="form" onSubmit={submit} className="p-6 md:p-9 lg:col-span-7">
+        <Panel read as="form" onSubmit={submit} className="p-8 md:p-12 lg:col-span-7">
           <fieldset className="border-0 p-0">
             <legend className="text-h3 text-ink">What is the issue?</legend>
             <ul className="mt-5 divide-y divide-line border-y border-line">

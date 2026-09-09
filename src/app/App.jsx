@@ -33,7 +33,14 @@ function Routed({ children }) {
 
 function ScrollToTop() {
   const { pathname } = useLocation();
-  useEffect(() => window.scrollTo(0, 0), [pathname]);
+  /* Block body, not a concise one: an arrow with a concise body RETURNS the
+     value of the expression, and React treats an effect's return value as a
+     cleanup function. window.scrollTo returns undefined in most browsers, so
+     this stayed invisible - until an environment where it does not, and the
+     whole tree unmounts with "destroy is not a function". */
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   /* Once a route has rendered successfully the app is healthy, so the one-shot
      reload guard is cleared and a future stale-chunk failure can recover too. */
