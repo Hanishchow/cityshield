@@ -45,6 +45,28 @@ export const config = {
     .filter(Boolean),
 
   /**
+   * Which peers may set X-Forwarded-For. The rate limiter keys on client IP,
+   * so this decides who can rewrite their own identity.
+   *
+   * Trusting everyone lets any caller spoof the header and skip the limit.
+   * Trusting no one behind a proxy is not the safe opposite: every client then
+   * shares the proxy's address in one bucket, so a single abuser throttles
+   * everybody. Neither is a good default, so it is stated explicitly per
+   * deployment — CIDR(s) for the reverse proxy in production, unset locally
+   * where there is no proxy and the header is absent anyway.
+   *
+   * Accepts a CIDR/IP list ("172.16.0.0/12"), a hop count ("1"), or "true".
+   */
+  trustProxy: ((): boolean | number | string => {
+    const raw = str('TRUST_PROXY');
+    if (!raw) return false;
+    if (raw === 'true') return true;
+    if (raw === 'false') return false;
+    const hops = Number(raw);
+    return Number.isInteger(hops) && hops >= 0 ? hops : raw;
+  })(),
+
+  /**
    * DPDP Act 2023: personal data may be kept only as long as the stated purpose
    * requires. Location pings are the most sensitive thing this service holds, so
    * they carry their own, shorter clock than the incident record.
@@ -55,8 +77,21 @@ export const config = {
   },
 } as const;
 
+/**
+ * The live store reports its own kind. Deriving it from DATABASE_URL instead
+ * would describe what was *configured*, not what is actually holding the data
+ * — so a deploy whose database never got wired up would still report
+ * `postgres` and look healthy while serving volatile memory.
+ */
+let storeKind: () => 'memory' | 'postgres' = () => (config.databaseUrl ? 'postgres' : 'memory');
+
+/** Called once by the store module at construction; breaks the import cycle. */
+export const reportStoreKind = (kind: () => 'memory' | 'postgres'): void => {
+  storeKind = kind;
+};
+
 export const capabilities = () => ({
-  store: config.databaseUrl ? 'postgres' : 'memory',
+  store: storeKind(),
   geocode: config.mapplsKey || config.mapplsClientId ? 'mappls' : config.olaKey ? 'ola' : 'mock',
   /* Not 'mock' vs 'live': both modes really sign frames. The distinction is
      whether keys were provisioned per junction or derived from one dev root,

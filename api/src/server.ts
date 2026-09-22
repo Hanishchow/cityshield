@@ -16,8 +16,9 @@ import telemetry from './lib/telemetry.ts';
 const app = Fastify({
   logger: { level: config.env === 'production' ? 'info' : 'debug' },
   /* Behind a proxy the client IP is only correct if we trust the forwarded
-     header, and the rate limiter keys on client IP. */
-  trustProxy: true,
+     header, and the rate limiter keys on client IP. Scoped to the configured
+     proxy rather than every peer — see config.trustProxy. */
+  trustProxy: config.trustProxy,
 });
 
 await app.register(cors, { origin: config.corsOrigins, credentials: true });

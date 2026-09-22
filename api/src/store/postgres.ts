@@ -1,5 +1,6 @@
 import postgres from 'postgres';
 import type { Store } from './types.ts';
+import { config } from '../config.ts';
 import {
   canTransition,
   newIncidentId,
@@ -89,6 +90,7 @@ export function createPostgresStore(url: string): Store {
 
   return {
     kind: 'postgres',
+    get,
 
     async ready(): Promise<boolean> {
       try {
@@ -207,6 +209,27 @@ export function createPostgresStore(url: string): Store {
         `;
       });
       return (await get(id))!;
+    },
+
+    async purge(now = new Date()) {
+      const cutoff = (days: number) =>
+        new Date(now.getTime() - days * 86_400_000).toISOString();
+
+      /* Order matters, and it is what makes this match the in-memory store.
+         Expired incidents go first and take their pings with them via ON
+         DELETE CASCADE, so the ping delete below only ever counts pings from
+         incidents that survived. The memory store reaches the same total by
+         `continue`-ing past deleted incidents before it counts their pings. */
+      const dropped = await sql`
+        DELETE FROM incidents
+        WHERE created_at < ${cutoff(config.retention.incidentDays)}
+      `;
+      const pings = await sql`
+        DELETE FROM incident_pings
+        WHERE at < ${cutoff(config.retention.pingDays)}
+      `;
+
+      return { pings: pings.count, incidents: dropped.count };
     },
 
     async setTasks(id: string, tasks: AgencyTask[]): Promise<Incident> {
