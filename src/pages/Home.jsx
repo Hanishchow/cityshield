@@ -8,6 +8,7 @@ import LocationGate from '../features/location/LocationGate.jsx';
 import { EMERGENCY_CATEGORIES } from '../lib/incident/routing.js';
 import { AGENCY_LABEL } from '../lib/incident/model.js';
 import Seo from '../components/seo/Seo.jsx';
+import { PAGES } from '../lib/seo.js';
 
 const HELPLINES = [
   { n: '112', service: 'All emergencies (ERSS)', note: 'National; awareness is low' },
@@ -89,7 +90,7 @@ function Head({ title, lead }) {
 export default function Home() {
   return (
     <>
-      <Seo description="Raise one emergency in Bengaluru and every responding agency - ambulance, police, fire, BBMP civic - attaches to the same record. No choosing which helpline to call." />
+      <Seo description={PAGES.home.description} />
 
       {/* Hero. Given its own column rather than a 12-grid: the second cell held
           the 3D shield and has been empty since that was removed. */}

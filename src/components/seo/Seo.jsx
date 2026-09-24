@@ -1,5 +1,12 @@
 import { useLocation } from 'react-router-dom';
-import { SITE_NAME, OG_IMAGE, absoluteUrl, breadcrumbSchema } from '../../lib/seo.js';
+import {
+  SITE_NAME,
+  OG_IMAGE,
+  OG_IMAGE_ALT,
+  absoluteUrl,
+  breadcrumbSchema,
+  pageTitle,
+} from '../../lib/seo.js';
 
 /**
  * Per-page document head.
@@ -7,10 +14,12 @@ import { SITE_NAME, OG_IMAGE, absoluteUrl, breadcrumbSchema } from '../../lib/se
  * React 19 hoists <title>, <meta> and <link> rendered anywhere in the tree into
  * <head>, so this needs no helmet library and no extra dependency.
  *
- * Note what this does NOT solve: the pages are client-rendered, so a crawler
- * that does not execute JavaScript sees only the shell. Googlebot does render,
- * but many crawlers and most social-preview scrapers do not. Fixing that
- * properly means prerendering, which is flagged rather than pretended away.
+ * The pages are client-rendered, and a crawler that does not execute JavaScript
+ * (most social-preview scrapers among them) never sees any of this. So
+ * scripts/prerender.mjs writes the same tags into each public page's static
+ * HTML at build time, from the same lib/seo.js copy. main.jsx drops those
+ * static copies before React mounts, and from then on this component owns the
+ * head. A tag added here belongs in the prerender too.
  */
 export default function Seo({
   title,
@@ -24,9 +33,7 @@ export default function Seo({
   const { pathname } = useLocation();
   const url = absoluteUrl(pathname);
 
-  /* The home page uses the bare site name. Everywhere else is suffixed, so every
-     title in a search result is unique AND identifiable at a glance. */
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME}: one incident, every agency`;
+  const fullTitle = pageTitle(title);
 
   return (
     <>
@@ -54,10 +61,7 @@ export default function Seo({
       {description && <meta name="twitter:description" content={description} />}
       <meta name="twitter:image" content={image} />
       {/* Alt text on the share image too: it is an image, and it is read out. */}
-      <meta
-        name="twitter:image:alt"
-        content="City Shield: one emergency incident record shared by every responding agency in Bengaluru"
-      />
+      <meta name="twitter:image:alt" content={OG_IMAGE_ALT} />
 
       {breadcrumbs && (
         <script type="application/ld+json">

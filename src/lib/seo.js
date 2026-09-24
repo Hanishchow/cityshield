@@ -14,13 +14,87 @@ export const SITE_URL = (
 
 export const SITE_NAME = 'City Shield';
 
-/** An app path ('/sos') to its absolute canonical URL. */
+/**
+ * An app path ('/sos') to its absolute canonical URL.
+ *
+ * Always with a trailing slash. Each page is served from a directory index
+ * (sos/index.html), and GitHub Pages answers '/sos' with a 301 to '/sos/'. A
+ * canonical or sitemap entry has to be the URL that returns 200, not the one
+ * that redirects to it.
+ */
 export function absoluteUrl(path = '/') {
-  const clean = `/${String(path).replace(/^\/+/, '')}`;
-  return `${SITE_URL}${clean === '/' ? '/' : clean}`;
+  const clean = `/${String(path).replace(/^\/+|\/+$/g, '')}`;
+  return `${SITE_URL}${clean === '/' ? '/' : `${clean}/`}`;
 }
 
 export const OG_IMAGE = `${SITE_URL}/social/og-default.png`;
+
+export const OG_IMAGE_ALT =
+  'City Shield: one emergency incident record shared by every responding agency in Bengaluru';
+
+/* The home page uses the bare site name. Everywhere else is suffixed, so every
+   title in a search result is unique AND identifiable at a glance. */
+export function pageTitle(title) {
+  return title ? `${title} | ${SITE_NAME}` : `${SITE_NAME}: one incident, every agency`;
+}
+
+/**
+ * The public, indexable pages.
+ *
+ * The pages read their title, description and breadcrumbs from here, and so
+ * does scripts/prerender.mjs when it writes each page's static HTML and the
+ * sitemap. One copy means the HTML a crawler fetches and the page React renders
+ * cannot drift apart.
+ *
+ * `heading` and `summary` repeat the page's own visible h1 and lead paragraph.
+ * They are only the static stand-in shown before the app mounts (or to a
+ * crawler that never runs it), so keep them in step with the page when its
+ * copy changes.
+ *
+ * /track, /live and /styleguide are deliberately absent: they carry noindex.
+ */
+export const PAGES = {
+  home: {
+    path: '/',
+    description:
+      'Raise one emergency in Bengaluru and every responding agency - ambulance, police, fire, BBMP civic - attaches to the same record. No choosing which helpline to call.',
+    heading: 'Six helplines. One incident.',
+    summary:
+      'A Bengaluru service that replaces knowing which number to call with a single action, then keeps every responding agency attached to the same record instead of six disconnected phone calls.',
+    changefreq: 'weekly',
+    priority: '1.0',
+  },
+  sos: {
+    path: '/sos',
+    title: 'Emergency SOS',
+    description:
+      'Hold to raise an emergency immediately. Your location and its accuracy are sent to the agencies that need it, and 112 stays one tap away.',
+    breadcrumbs: [
+      { name: 'Home', path: '/' },
+      { name: 'Emergency SOS', path: '/sos' },
+    ],
+    heading: 'Hold to send an alert.',
+    summary:
+      'Hold for two seconds. Your location starts being captured the moment you press down, so nothing is lost while you decide.',
+    changefreq: 'monthly',
+    priority: '0.9',
+  },
+  report: {
+    path: '/report',
+    title: 'Report an issue',
+    description:
+      'Report a civic or non-life-threatening issue in Bengaluru - roads, water, drainage, debris - into the same shared record the emergency services use.',
+    breadcrumbs: [
+      { name: 'Home', path: '/' },
+      { name: 'Report an issue', path: '/report' },
+    ],
+    heading: 'Report a civic issue.',
+    summary:
+      'Roads, water, garbage, streetlights and drainage. This is a queue, not a dispatch - it never shares an alerting path with emergencies.',
+    changefreq: 'monthly',
+    priority: '0.8',
+  },
+};
 
 /**
  * Structured data.

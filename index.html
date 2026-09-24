@@ -9,11 +9,13 @@
          and tested. -->
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f6fa" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1b33" />
-    <!-- The page title and meta description are owned per route by the Seo
-         component, so every page gets its own. They are deliberately absent
-         here: duplicating them would emit two of each element, which is invalid,
-         and a crawler taking the first would read the same generic copy on every
-         page. -->
+    <!-- Each page's title, description, canonical, Open Graph tags and JSON-LD
+         are written in at the marker below by scripts/prerender.mjs at build
+         time, so crawlers and link previews that never run JavaScript still get
+         them. Every one is marked data-prerender, and main.jsx removes them
+         before React mounts: from then on the Seo component owns the head, and
+         leaving both would emit two of each element. -->
+    <!--app-head-->
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/brand/icon-192.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -39,7 +41,9 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- The marker is replaced with a short static summary of the page, which
+         createRoot() clears when the app mounts. -->
+    <div id="root"><!--app-html--></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

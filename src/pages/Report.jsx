@@ -10,6 +10,7 @@ import { MOCK_WARD } from '../lib/services/mockData.js';
 import { makeId } from '../lib/incident/model.js';
 import Seo from '../components/seo/Seo.jsx';
 import Breadcrumbs from '../components/seo/Breadcrumbs.jsx';
+import { PAGES } from '../lib/seo.js';
 
 /**
  * Civic reporting.
@@ -18,10 +19,7 @@ import Breadcrumbs from '../components/seo/Breadcrumbs.jsx';
  * no siren language, no urgency colour. A civic queue and an emergency
  * dispatch must not feel like the same act.
  */
-const CRUMBS = [
-  { name: 'Home', path: '/' },
-  { name: 'Report an issue', path: '/report' },
-];
+const CRUMBS = PAGES.report.breadcrumbs;
 
 export default function Report() {
   const [category, setCategory] = useState(CIVIC_CATEGORIES[0].id);
@@ -58,8 +56,8 @@ export default function Report() {
   return (
     <>
       <Seo
-        title="Report an issue"
-        description="Report a civic or non-life-threatening issue in Bengaluru - roads, water, drainage, debris - into the same shared record the emergency services use."
+        title={PAGES.report.title}
+        description={PAGES.report.description}
         breadcrumbs={CRUMBS}
       />
       <Section>

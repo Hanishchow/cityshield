@@ -12,6 +12,7 @@ import { EMERGENCY_CATEGORIES } from '../lib/incident/routing.js';
 import { AGENCY_LABEL } from '../lib/incident/model.js';
 import Seo from '../components/seo/Seo.jsx';
 import Breadcrumbs from '../components/seo/Breadcrumbs.jsx';
+import { PAGES } from '../lib/seo.js';
 import SyncNotice from '../components/ui/SyncNotice.jsx';
 
 /**
@@ -25,10 +26,7 @@ import SyncNotice from '../components/ui/SyncNotice.jsx';
 
 const AUTO_ROUTE_MS = 10000;
 
-const CRUMBS = [
-  { name: 'Home', path: '/' },
-  { name: 'Emergency SOS', path: '/sos' },
-];
+const CRUMBS = PAGES.sos.breadcrumbs;
 
 export default function Sos() {
   const navigate = useNavigate();
@@ -184,8 +182,8 @@ export default function Sos() {
   return (
     <>
       <Seo
-        title="Emergency SOS"
-        description="Hold to raise an emergency immediately. Your location and its accuracy are sent to the agencies that need it, and 112 stays one tap away."
+        title={PAGES.sos.title}
+        description={PAGES.sos.description}
         breadcrumbs={CRUMBS}
       />
       <Section>
