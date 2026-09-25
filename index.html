@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/cityshield/brand/logo-mark-96.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Theme colour is per colour-scheme: a light chrome bar over a dark app
+         (or the reverse) is the tell that a PWA was never actually installed
+         and tested. -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f6fa" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1b33" />
+    <!-- Each page's title, description, canonical, Open Graph tags and JSON-LD
+         are written in at the marker below by scripts/prerender.mjs at build
+         time, so crawlers and link previews that never run JavaScript still get
+         them. Every one is marked data-prerender, and main.jsx removes them
+         before React mounts: from then on the Seo component owns the head, and
+         leaving both would emit two of each element. -->
+    <title data-prerender>City Shield: one incident, every agency</title>
+    <meta name="description" content="Raise one emergency in Bengaluru and every responding agency - ambulance, police, fire, BBMP civic - attaches to the same record. No choosing which helpline to call." data-prerender />
+    <link rel="canonical" href="https://hanishchow.github.io/cityshield/" data-prerender />
+    <meta property="og:type" content="website" data-prerender />
+    <meta property="og:site_name" content="City Shield" data-prerender />
+    <meta property="og:title" content="City Shield: one incident, every agency" data-prerender />
+    <meta property="og:description" content="Raise one emergency in Bengaluru and every responding agency - ambulance, police, fire, BBMP civic - attaches to the same record. No choosing which helpline to call." data-prerender />
+    <meta property="og:url" content="https://hanishchow.github.io/cityshield/" data-prerender />
+    <meta property="og:image" content="https://hanishchow.github.io/cityshield/social/og-default.png" data-prerender />
+    <meta property="og:image:width" content="1200" data-prerender />
+    <meta property="og:image:height" content="630" data-prerender />
+    <meta property="og:locale" content="en_IN" data-prerender />
+    <meta name="twitter:card" content="summary_large_image" data-prerender />
+    <meta name="twitter:title" content="City Shield: one incident, every agency" data-prerender />
+    <meta name="twitter:description" content="Raise one emergency in Bengaluru and every responding agency - ambulance, police, fire, BBMP civic - attaches to the same record. No choosing which helpline to call." data-prerender />
+    <meta name="twitter:image" content="https://hanishchow.github.io/cityshield/social/og-default.png" data-prerender />
+    <meta name="twitter:image:alt" content="City Shield: one emergency incident record shared by every responding agency in Bengaluru" data-prerender />
+    <script type="application/ld+json" data-prerender>{"@context":"https://schema.org","@type":"EmergencyService","@id":"https://hanishchow.github.io/cityshield/#organization","name":"City Shield","alternateName":"CityShield","url":"https://hanishchow.github.io/cityshield/","logo":"https://hanishchow.github.io/cityshield/brand/icon-512.png","image":"https://hanishchow.github.io/cityshield/social/og-default.png","founder":[{"@type":"Person","name":"Hanish Chowdary N","url":"https://hanishchow.github.io/"},{"@type":"Person","name":"Shreyas Jayanna"}],"description":"One emergency incident record that ambulance, police, fire and civic services in Bengaluru all attach to, instead of separate calls to separate helplines.","areaServed":{"@type":"City","name":"Bengaluru","address":{"@type":"PostalAddress","addressLocality":"Bengaluru","addressRegion":"Karnataka","addressCountry":"IN"}},"availableLanguage":[{"@type":"Language","name":"English"}],"telephone":"+91-112","openingHoursSpecification":{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"00:00","closes":"23:59"}}</script>
+    <script type="application/ld+json" data-prerender>{"@context":"https://schema.org","@type":"WebSite","@id":"https://hanishchow.github.io/cityshield/#website","url":"https://hanishchow.github.io/cityshield/","name":"City Shield","alternateName":"CityShield","publisher":{"@id":"https://hanishchow.github.io/cityshield/#organization"},"inLanguage":"en-IN"}</script>
+    <link rel="manifest" href="/cityshield/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/cityshield/brand/icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="City Shield" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <script>
+      /* Apply the stored palette/theme BEFORE first paint. Two reasons:
+         1. No flash of the wrong theme on load.
+         2. React runs child effects before parent effects, so a page that
+            measures resolved tokens on mount would otherwise read the
+            defaults rather than the user's choice. */
+      (function () {
+        try {
+          var d = document.documentElement;
+          d.setAttribute('data-palette', localStorage.getItem('cs.palette') || 'civic');
+          d.setAttribute('data-theme', localStorage.getItem('cs.theme') || 'light');
+          d.style.colorScheme = d.getAttribute('data-theme');
+        } catch (e) {
+          document.documentElement.setAttribute('data-palette', 'civic');
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/cityshield/assets/index-DsIWnHB1.js"></script>
+    <link rel="modulepreload" crossorigin href="/cityshield/assets/Seo-Cd-UChLA.js">
+    <link rel="stylesheet" crossorigin href="/cityshield/assets/index-CqcAclk2.css">
+  </head>
+  <body>
+    <!-- The marker is replaced with a short static summary of the page, which
+         createRoot() clears when the app mounts. -->
+    <div id="root">
+      <main class="mx-auto max-w-2xl px-5 py-24">
+        <h1 class="text-h1 text-ink">Six helplines. One incident.</h1>
+        <p class="mt-3 text-body text-ink-2">A Bengaluru service that replaces knowing which number to call with a single action, then keeps every responding agency attached to the same record instead of six disconnected phone calls.</p>
+        <p class="mt-3 text-small text-ink-3">Prototype on mock data. In a real emergency, call <a href="tel:112">112</a>.</p>
+      </main>
+    </div>
+  </body>
+</html>

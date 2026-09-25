@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Individual incident records are private to the person who raised them and to
+# the agencies handling them. They are not content, and they must never be
+# indexed. Paths are origin-relative, so they carry the deploy sub-path -
+# "Disallow: /track/" would match nothing on a project page served at
+# /city-shield/.
+Disallow: /cityshield/track/
+Disallow: /cityshield/live/
+Disallow: /cityshield/styleguide
+
+Sitemap: https://hanishchow.github.io/cityshield/sitemap.xml
