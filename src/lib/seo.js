@@ -113,9 +113,14 @@ export function organizationSchema() {
     '@type': 'EmergencyService',
     '@id': `${SITE_URL}/#organization`,
     name: SITE_NAME,
+    alternateName: 'CityShield',
     url: `${SITE_URL}/`,
     logo: `${SITE_URL}/brand/icon-512.png`,
     image: OG_IMAGE,
+    founder: [
+      { '@type': 'Person', name: 'Hanish Chowdary N', url: 'https://hanishchow.github.io/' },
+      { '@type': 'Person', name: 'Shreyas Jayanna' },
+    ],
     description:
       'One emergency incident record that ambulance, police, fire and civic services in Bengaluru all attach to, instead of separate calls to separate helplines.',
     areaServed: {
@@ -156,6 +161,7 @@ export function websiteSchema() {
     '@id': `${SITE_URL}/#website`,
     url: `${SITE_URL}/`,
     name: SITE_NAME,
+    alternateName: 'CityShield',
     publisher: { '@id': `${SITE_URL}/#organization` },
     inLanguage: 'en-IN',
   };
